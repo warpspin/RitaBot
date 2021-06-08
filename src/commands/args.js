@@ -1,414 +1,248 @@
-// -----------------
-// Global variables
-// -----------------
-
-// Codebeat:disable[LOC,ABC,BLOCK_NESTING,ARITY]
 const langCheck = require("../core/lang.check");
 const logger = require("../core/logger");
 const db = require("../core/db");
 const fn = require("../core/helpers");
 
-// ---------
+//
 // Commands
-// ---------
+//
 
-const cmdHelp = require("./utility_commands/help");
-const cmdList = require("./info_commands/list");
-const cmdStats = require("./info_commands/stats");
-const cmdVersion = require("./info_commands/version");
-const cmdEmbed = require("./settings_commands/embed");
-const cmdBot2bot = require("./settings_commands/bot2bot");
-const cmdDonate = require("./utility_commands/donate");
-const cmdMisc = require("./info_commands/misc");
-const cmdSettings = require("./settings_commands/settings");
-const cmdTranslateLast = require("./translation_commands/translate.last");
-const cmdTranslateThis = require("./translation_commands/translate.this");
-const cmdTranslateAuto = require("./translation_commands/translate.auto");
-const cmdTranslateStop = require("./translation_commands/translate.stop");
-const cmdTranslateTasks = require("./translation_commands/translate.tasks");
-const cmdDebug = require("./settings_commands/debug");
-const cmdPrefix = require("./settings_commands/prefix");
-const cmdCreate = require("./utility_commands/create.channel");
-const cmdMod = require("./future_commands/mod.js");
-const cmdHistory = require("./info_commands/history.js");
-const cmdEject = require("./utility_commands/eject.js");
-const cmdBlacklist = require("./utility_commands/blacklist.js");
-const cmdPerms = require("./utility_commands/perm.js");
-const cmdCheck = require("./utility_commands/check.js");
-
+const cmdHelp = require("./help");
+const cmdList = require("./list");
+const cmdStats = require("./stats");
+const cmdMisc = require("./misc");
+const cmdSettings = require("./settings");
+const cmdTranslateLast = require("./translate.last");
+const cmdTranslateThis = require("./translate.this");
+const cmdTranslateAuto = require("./translate.auto");
+const cmdTranslateStop = require("./translate.stop");
+const cmdTranslateTasks = require("./translate.tasks");
 
 // ---------------------------------------
 // Extract a parameter's value with regex
 // ---------------------------------------
 
-const extractParam = function extractParam (key, str, def = null, allowArray = false)
+const extractParam = function(key, str, def = null, allowArray = false)
 {
-
    const rgx = new RegExp(`${key}\\s*((?:(?:\\S*\\s*,\\s*)+\\S*)|\\S*)`, "m");
 
    const match = rgx.exec(str);
 
    if (match)
    {
-
       if (match[1] === "" || match[1] === " ")
       {
-
          return def;
-
       }
       if (allowArray)
       {
-
-         if (key === "to")
-         {
-
-            const input = /to\s([a-z \s]+)\sfor/gmi;
-            const matching = input.exec(match.input);
-            if (matching)
-            {
-
-               // console.log(matching[1].replace("to ", ""));
-               return matching[1].replace("to ", "");
-
-            }
-
-         }
-
-
          return fn.removeDupes(match[1].replace(/\s/igm, "").split(","));
-
       }
-      if (match.length > 0)
-      {
-
-         return match[1];
-
-      }
-
+      return match[1];
    }
-
-
    return def;
-
 };
 
-
-// ---------------------
+// --------------------
 // Extract number param
-// ---------------------
+// --------------------
 
-const extractNum = function extractNum (str)
+const extractNum = function(str)
 {
-
-   const rgx = new RegExp(
-      "(?:^\\s*(-?\\d+))|(?:[^,]\\s*(-?\\d+))",
-      "im"
-   );
+   const rgx = new RegExp("(?:^\\s*(-?\\d+))|(?:[^,]\\s*(-?\\d+))", "im");
 
    const match = rgx.exec(str);
 
    if (match)
    {
-
       if (match[1])
       {
-
          return match[1];
-
       }
       return match[2];
-
    }
    return null;
-
 };
 
 // ------------------
 // Check for content
 // ------------------
 
-const checkContent = function checkContent (msg, output)
+const checkContent = function(msg, output)
 {
-
    const hasContent = (/([^:]*):(.*)/).exec(msg);
 
    if (hasContent)
    {
-
       output.main = hasContent[1].trim();
       output.content = hasContent[2].trim();
-
    }
-
 };
 
-// -------------
+// ------------------
 // Get main arg
-// -------------
+// ------------------
 
-const getMainArg = function getMainArg (output)
+const getMainArg = function(output)
 {
-
    const sepIndex = output.main.indexOf(" ");
 
    if (sepIndex > -1)
    {
-
       output.params = output.main.slice(sepIndex + 1);
-      output.main = output.main.slice(
-         0,
-         sepIndex
-      );
-
+      output.main = output.main.slice(0, sepIndex);
    }
-
 };
 
-// -------------
+// ------------------
 // Strip prefix
-// -------------
+// ------------------
 
-const stripPrefix = function stripPrefix (message, config, bot)
+const stripPrefix = function(message, config, bot)
 {
-
    let cmd = message.content;
 
-   cmd = cmd.replace(
-      config.translateCmd,
-      ""
-   );
-   cmd = cmd.replace(
-      config.translateCmdShort,
-      ""
-   );
+   cmd = cmd.replace(config.translateCmd, "");
+   cmd = cmd.replace(config.translateCmdShort, "");
 
-   if (cmd.startsWith(`<@${bot.id}>`) || cmd.startsWith(`<@!${bot.id}>`))
+   if (cmd.startsWith(bot))
    {
-
-      cmd = cmd.replace(
-         /<@.*?>/,
-         ""
-      );
-
+      cmd = cmd.replace(bot, "");
    }
 
    return cmd;
-
 };
 
 // --------------------------------------
 // Analyze arguments from command string
 // --------------------------------------
 
-module.exports = function run (data)
+module.exports = function(data)
 {
-
-   const output = {
-      "main": stripPrefix(
-         data.message,
-         data.config,
-         data.bot
-      ).trim(),
-      "params": null
+   var output = {
+      main: stripPrefix(data.message, data.config, `${data.bot}`).trim(),
+      params: null
    };
 
-   checkContent(
-      output.main,
-      output
-   );
+   checkContent(output.main, output);
 
    getMainArg(output);
 
    if (output.main === "channel")
    {
-
       output.auto = output.main;
       output.main = "auto";
-
    }
 
    if (output.main === `${data.bot}`)
    {
-
       output.main = "help";
-
    }
 
-   output.to = langCheck(extractParam(
-      "to",
-      output.params,
-      ["default"],
-      true
-   ));
+   output.to = langCheck(extractParam("to", output.params, "default", true));
 
-   output.from = langCheck(extractParam(
-      "from",
-      output.params,
-      ["auto"],
-      true
-   ));
+   output.from = langCheck(extractParam("from", output.params, "auto", true));
 
-   output.for = extractParam(
-      "for",
-      output.params,
-      ["me"],
-      true
-   );
+   output.for = extractParam("for", output.params, ["me"], true);
 
    output.num = extractNum(output.params);
 
-   // -----------------------------
+   //
    // Get server/bot info/settings
-   // -----------------------------
+   //
 
-   let id = "bot";
+   var id = "bot";
 
    if (data.message.channel.type === "text")
    {
-
       id = data.message.channel.guild.id;
-
    }
 
-   db.getServerInfo(
-      id,
-      function getServerInfo (server)
-      {
-
-         output.server = server;
-
-         // -----------------------------------
-         // Get default language of server/bot
-         // -----------------------------------
-
-         if (output.server[0].blacklisted === true)
-         {
-
-            // console.log(`${output.server[0].blacklisted}`);
-            data.client.guilds.cache.get(id).leave();
-            console.log(`Self Kicked on command use due to blacklisted`);
-
-         }
-
-         if (output.to === "default")
-         {
-
-            if (server && server.lang)
-            {
-
-               output.to = langCheck(server.lang);
-
-            }
-            else
-            {
-
-               output.to = langCheck(data.config.defaultLanguage);
-
-            }
-
-         }
-
-         // ----------------------------------
-         // Add command info to main data var
-         // ----------------------------------
-
-         data.cmd = output;
-
-         // -----------------------------
-         // Check if channel is writable
-         // -----------------------------
-
-         data.canWrite = true;
-
-         if (data.message.channel.type === "text")
-         {
-
-            data.canWrite = fn.checkPerm(
-               data.message.channel.guild.me,
-               data.message.channel,
-               "SEND_MESSAGES"
-            );
-
-         }
-
-         // -----------------------
-         // Log command data (dev)
-         // -----------------------
-
-         logger(
-            "cmd",
-            data
-         );
-
-         // ---------------
-         // Legal Commands
-         // ---------------
-
-         const cmdMap = {
-            "auto": cmdTranslateAuto,
-            "ban": cmdMod.ban,
-            "blacklist": cmdBlacklist.blacklist,
-            "bot2bot": cmdBot2bot,
-            "check": cmdCheck,
-            "checkperms": cmdPerms,
-            "create": cmdCreate,
-            "debug": cmdDebug,
-            "donate": cmdDonate,
-            "eject": cmdEject.eject,
-            "embed": cmdEmbed,
-            "help": cmdHelp,
-            "history": cmdHistory,
-            "id": cmdMisc.ident,
-            "info": cmdHelp,
-            "invite": cmdMisc.invite,
-            "last": cmdTranslateLast.run,
-            "list": cmdList,
-            "mute": cmdMod.mute,
-            "prefix": cmdPrefix,
-            "proc": cmdMisc.proc,
-            "settings": cmdSettings,
-            "shards": cmdMisc.shards,
-            "stats": cmdStats,
-            "stop": cmdTranslateStop,
-            "tasks": cmdTranslateTasks,
-            "this": cmdTranslateThis,
-            "unban": cmdMod.unban,
-            "unblacklist": cmdBlacklist.unblacklist,
-            "unmute": cmdMod.unmute,
-            "unwarn": cmdEject.unwarn,
-            "update": cmdMisc.update,
-            "version": cmdVersion,
-            "warn": cmdEject.warn
-         };
-
-         // --------------------------
-         // Execute command if exists
-         // --------------------------
-
-         output.main = output.main.toLowerCase();
-
-         if (Object.prototype.hasOwnProperty.call(
-            cmdMap,
-            output.main
-         ))
-         {
-
-            cmdMap[output.main](data);
-
-         }
-
-      }
-   ).catch((err) =>
+   db.getServerInfo(id, function(err, server)
    {
+      if (err)
+      {
+         logger("error", err);
+      }
 
-      console.log(
-         "error",
-         err,
-         "warning",
-         id
-      );
+      else
+      {
+         output.server = server;
+      }
 
+      //
+      // Get default language of server/bot
+      //
+
+      if (output.to === "default")
+      {
+         if (server && server.lang)
+         {
+            output.to = langCheck(server.lang);
+         }
+         else
+         {
+            output.to = langCheck(data.config.defaultLanguage);
+         }
+      }
+
+      //
+      // Add command info to main data var
+      //
+
+      data.cmd = output;
+
+      //
+      // check if channel is writable
+      //
+
+      data.canWrite = true;
+
+      if (data.message.channel.type === "text")
+      {
+         data.canWrite = fn.checkPerm(
+            data.message.channel.guild.me,
+            data.message.channel,
+            "SEND_MESSAGES"
+         );
+      }
+
+      //
+      // log command data (dev)
+      //
+
+      logger("cmd", data);
+
+      //
+      // Legal Commands
+      //
+
+      const cmdMap = {
+         "this": cmdTranslateThis,
+         "last": cmdTranslateLast,
+         "auto": cmdTranslateAuto,
+         "stop": cmdTranslateStop,
+         "tasks": cmdTranslateTasks,
+         "help": cmdHelp,
+         "info": cmdHelp,
+         "list": cmdList,
+         "stats": cmdStats,
+         "version": cmdMisc.version,
+         "invite": cmdMisc.invite,
+         "shards": cmdMisc.shards,
+         "proc": cmdMisc.proc,
+         "settings": cmdSettings
+      };
+
+      //
+      // Execute command if exists
+      //
+
+      output.main = output.main.toLowerCase();
+
+      if (cmdMap.hasOwnProperty(output.main))
+      {
+         cmdMap[output.main](data);
+      }
    });
-
 };

@@ -1,44 +1,27 @@
-/* eslint-disable no-unused-vars */
-const gulp = require("gulp");
-const eslint = require("gulp-eslint");
-const watch = require("rita-gulp-watch");
-const lec = require("gulp-line-ending-corrector");
-// const uglify = require('gulp-uglify-es').default;
+const gulp = require('gulp');
+const eslint = require('gulp-eslint');
+const watch = require('gulp-watch');
+const lec = require('gulp-line-ending-corrector');
+//const uglify = require('gulp-uglify-es').default;
 
-// tasks
+gulp.task('lint', () => {
+    return gulp.src(['src/**/*.js'])
+        .pipe(lec())
+        .pipe(eslint())
+        .pipe(eslint.format())
+        .pipe(eslint.failAfterError());
+});
 
-function lint ()
-{
+gulp.task("compress", function () {
+    return gulp.src("src/**/*.js")
+        //.pipe(uglify())
+        .pipe(gulp.dest("build/"));
+});
 
-   // execute
-   return gulp.src(["src/**/*.js"]).
-      pipe(lec()).
-      pipe(eslint()).
-      pipe(eslint.format()).
-      pipe(eslint.failAfterError());
+gulp.task('default', ['lint', 'compress']);
 
-}
+gulp.task('build', ['lint', 'compress']);
 
-function compress ()
-{
-
-   // execute
-   return gulp.src("src/**/*.js").
-   // .pipe(uglify())
-      pipe(gulp.dest("build"));
-
-}
-
-function GulpWatch ()
-{
-
-   gulp.watch("src/**/*.js", gulp.series("default"));
-
-}
-
-gulp.task("compress", compress);
-gulp.task("lint", lint);
-gulp.task("watch", GulpWatch);
-gulp.task("default", gulp.parallel(lint, compress));
-gulp.task("build", gulp.parallel(lint, compress));
-
+gulp.task('watch', function() {
+  gulp.watch('src/**/*.js', ['default']);
+});
