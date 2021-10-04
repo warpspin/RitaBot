@@ -1,6 +1,3 @@
-/* eslint-disable sort-keys */
-/* eslint-disable no-undef */
-/* eslint-disable no-unused-vars */
 // -----------------
 // Global variables
 // -----------------
@@ -8,9 +5,8 @@
 // Codebeat:disable[LOC,ABC,BLOCK_NESTING,ARITY]
 const sendMessage = require("../../core/command.send");
 const colors = require("../../core/colors");
-const {MessageEmbed, MessageActionRow, MessageSelectMenu} = require("discord.js");
-const {message} = require("../../message");
-const richEmbedMessage = new MessageEmbed();
+const Discord = require("discord.js");
+const richEmbedMessage = new Discord.MessageEmbed();
 const time = {
    "long": 60000,
    "short": 5000
@@ -806,7 +802,6 @@ module.exports = function run (data)
       return sendMessage(data);
 
    }
-
    else if (data.cmd.params !== null)
    {
 

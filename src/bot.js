@@ -1,9 +1,11 @@
-/* eslint-disable sort-keys */
 // -----------------
 // Global variables
 // -----------------
 
 // Codebeat:disable[LOC,ABC,BLOCK_NESTING]
+/* eslint-disable no-inline-comments */
+/* eslint-disable line-comment-position */
+/* eslint-disable sort-keys */
 const time = {
    "long": 60000,
    "mid": 30000,
@@ -16,13 +18,20 @@ const env = `${__dirname.slice(
 require("dotenv").config({
    "path": env
 });
-const {Client, Intents} = require("discord.js");
+const {Client, Options, Intents} = require("discord.js");
 
 const myIntents = new Intents(32509);
 
 const client = new Client({
    "restRequestTimeout": time.mid,
    "shards": "auto",
+   "makeCache": Options.cacheWithLimits({
+      "GuildBanManager": 20, // guild.bans
+      "GuildManager": Infinity, // client.guilds
+      "MessageManager": 2, // channel.messages
+      "PresenceManager": 1, // guild.presences
+      "UserManager": 1 // client.users
+   }),
    "intents": myIntents
 });
 const auth = require("./core/auth");
