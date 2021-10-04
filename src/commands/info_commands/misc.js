@@ -8,8 +8,6 @@
 /* eslint-disable no-magic-numbers */
 const auth = require("../../core/auth");
 const db = require("../../core/db");
-const fn = require("../../core/helpers");
-const logger = require("../../core/logger");
 const process = require("process");
 const {stripIndent} = require("common-tags");
 const {oneLine} = require("common-tags");
@@ -52,122 +50,22 @@ module.exports.shards = function shards (data)
    // Get shard info
    // ---------------
 
-   const {shard} = data.message.client;
+   data.color = "info";
 
-   if (!shard)
-   {
-
-      // ---------------
-      // Render message
-      // ---------------
-
-      data.title = "Shards Info";
-
-      data.footer = {
-         "text": "Single Process - No Sharding Manager"
-      };
-
-      data.color = "info";
-
-      data.text = `​\n${oneLine`
+   data.text = `​\n${oneLine`
          :bar_chart:  ​
-         **\`${data.message.client.guilds.cache.size}\`**  guilds!  ·  ​
+         **\`${data.message.client.options.shardCount}\`**  shards  ·  ​
+         **\`${data.message.client.guilds.cache.size}\`**  guilds  ·  ​
          **\`${data.message.client.channels.cache.size}\`**  channels  ·  ​
          **\`${db.server_obj.size}\`**  users
       `}\n​`;
-
-      // -------------
-      // Send message
-      // -------------
-
-      return sendMessage(data);
-
-   }
-
-   // --------------------------
-   // Get proccess/shard uptime
-   // --------------------------
-
-   function shardErr (err)
-   {
-
-      return logger(
-         "error",
-         err,
-         "shardFetch",
-         data.message.guild.name
-      );
-
-   }
-
-   shard.fetchClientValues("guilds.cache.size").then((guildsSize) =>
-   {
-
-      shard.fetchClientValues("channels.cache.size").then((channelsSize) =>
-      {
-
-         shard.broadcastEval("this.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0)").then((usersSize) =>
-         {
-
-            const output = [];
-
-            // eslint-disable-next-line no-plusplus
-            for (let i = 0; i < shard.count; i += 1)
-            {
-
-               output.push({
-                  "inline": true,
-                  "name": `:pager: - Shard #${i}`,
-                  "value": stripIndent`
-                     ​
-                     **\`${guildsSize[i]}\`** guilds
-
-                     **\`${channelsSize[i]}\`** channels
-
-                     **\`${usersSize[i]}\`** users
-                     ​
-                  `
-               });
-
-            }
-
-            // ---------------
-            // Render message
-            // ---------------
-
-            data.title = "Shards Info";
-
-            data.text = `​\n${oneLine`
-               :bar_chart:   Total:  ​
-               **\`${shard.count}\`**  shards  ·  ​
-               **\`${fn.arraySum(guildsSize)}\`**  guilds  ·  ​
-               **\`${fn.arraySum(channelsSize)}\`**  channels  ·  ​
-               **\`${fn.arraySum(usersSize)}\`**  users
-            `}\n​`;
-
-            data.color = "info";
-
-            data.fields = output;
-            return sendMessage(data);
-
-            // -------------
-            // Catch errors
-            // -------------
-
-         }).
-            catch(shardErr);
-
-      }).
-         catch(shardErr);
-
-   }).
-      catch(shardErr);
 
    // -------------
    // Send message
    // -------------
 
-   // return sendMessage(data);
+   return sendMessage(data);
+
 
 };
 
@@ -185,23 +83,6 @@ module.exports.proc = function proc (data)
    const title = `**\`${process.title}\`** `;
    const pid = `**\`#${process.pid}\`** `;
    const platform = `**\`${process.platform}\`** `;
-
-   // ---------------
-   // Get shard info
-   // ---------------
-
-   let {shard} = data.message.client;
-
-   if (!shard)
-   {
-
-      shard = {
-         "count": 1,
-         "id": 0
-
-      };
-
-   }
 
    // -----------------------
    // Byte formatter (mb/gb)
@@ -266,43 +147,20 @@ module.exports.proc = function proc (data)
    // ---------------
    // Render message
    // ---------------
-   if (shard.id === 0)
-   {
 
-      data.text = stripIndent`
-      :robot:  Process:  ${title + pid + platform}
+   data.text = stripIndent`
+   :robot:  Process:  ${title + pid + platform}
 
-      :control_knobs:  RAM:  ${memoryFormat}
+   :control_knobs:  RAM:  ${memoryFormat}
 
-      :ping_pong:  Rita's Latency: **\`${botPing}\`** ms
+   :ping_pong:  Rita's Latency: **\`${botPing}\`** ms
 
-      :stopwatch:  Proc Uptime:  ${uptimeFormat(procUptime)}
+   :stopwatch:  Proc Uptime:  ${uptimeFormat(procUptime)}
 
-      :stopwatch:  Shard Uptime:  ${uptimeFormat(shardUptime)}
+   :stopwatch:  Shard Uptime:  ${uptimeFormat(shardUptime)}
 
-      :pager:  Current Shard:  **\`${shard.id + 1} / ${shard.count}\`**
+   :pager:  Current Shard:  **\`${data.message.guild.shardID + 1} / ${data.message.client.options.shardCount}\`**
    `;
-
-   }
-
-   if (shard.count >= 2)
-   {
-
-      data.text = stripIndent`
-      :robot:  Process:  ${title + pid + platform}
-
-      :control_knobs:  RAM:  ${memoryFormat}
-
-      :ping_pong:  Rita's Latency: **\`${botPing}\`** ms
-
-      :stopwatch:  Proc Uptime:  ${uptimeFormat(procUptime)}
-
-      :stopwatch:  Shard Uptime:  ${uptimeFormat(shardUptime)}
-
-      :pager:  Current Shard:  **\`${shard.ids[0] + 1} / ${shard.count}\`**
-   `;
-
-   }
 
    // -------------
    // Send message

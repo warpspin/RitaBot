@@ -52,7 +52,7 @@ db.
 
       logger(
          "dev",
-         "Successfully connected to database"
+         `----------------------------------------\nSuccessfully connected to database`
       );
 
    }).
@@ -175,11 +175,26 @@ const Servers = db.define(
          "type": Sequelize.BOOLEAN,
          "defaultValue": false
       },
+      "flag": {
+         "type": Sequelize.BOOLEAN,
+         "defaultValue": true
+      },
       "owner": {
          "type": Sequelize.STRING(255),
          "defaultValue": "Unknown"
+      },
+      "errorcount": {
+         "type": Sequelize.INTEGER,
+         "defaultValue": 0
+      },
+      "warncount": {
+         "type": Sequelize.INTEGER,
+         "defaultValue": 0
+      },
+      "ejectcount": {
+         "type": Sequelize.INTEGER,
+         "defaultValue": 0
       }
-
    }
 );
 
@@ -236,6 +251,9 @@ exports.initializeDatabase = async function initializeDatabase (client)
    db.sync({logging: false}).then(async () =>
    {
 
+      // eslint-disable-next-line init-declarations
+      let guild;
+
       await Stats.upsert({logging: false,
          "id": "bot"});
       await this.updateColumns();
@@ -254,7 +272,7 @@ exports.initializeDatabase = async function initializeDatabase (client)
       for (i = 0; i < guilds; i += 1)
       {
 
-         const guild = guildsArray[i];
+         guild = guildsArray[i];
          const guildID = guild.id;
          // eslint-disable-next-line no-await-in-loop
          await Stats.upsert({"id": guildID,
@@ -305,7 +323,7 @@ exports.initializeDatabase = async function initializeDatabase (client)
       for (let i = 0; i < guildClient.length; i += 1)
       {
 
-         const guild = guildClient[i];
+         guild = guildClient[i];
          server_obj[guild.id].guild = guild;
          server_obj[guild.id].size = guild.memberCount;
          if (!server_obj.size)
@@ -501,6 +519,10 @@ exports.updateColumns = async function updateColumns ()
    await this.addTableColumn("servers", serversDefinition, "announce", Sequelize.BOOLEAN, true);
    await this.addTableColumn("servers", serversDefinition, "persist", Sequelize.BOOLEAN, false);
    await this.addTableColumn("servers", serversDefinition, "owner", Sequelize.STRING(255), "Unknown");
+   await this.addTableColumn("servers", serversDefinition, "errorcount", Sequelize.INTEGER, 0);
+   await this.addTableColumn("servers", serversDefinition, "warncount", Sequelize.INTEGER, 0);
+   await this.addTableColumn("servers", serversDefinition, "ejectcount", Sequelize.INTEGER, 0);
+   await this.addTableColumn("servers", serversDefinition, "flag", Sequelize.BOOLEAN, true);
    // console.log("DEBUG: All Columns Checked or Added");
 
    // For older version of RITA, must remove old unique index
@@ -554,7 +576,7 @@ exports.channelTasks = function channelTasks (data)
    if (data.message.channel.type === "dm")
    {
 
-      console.log("DEBUG: Line 666 - DB.js");
+      // console.log("DEBUG: Line 666 - DB.js");
       id = `@${data.message.author.id}`;
 
    }
@@ -793,12 +815,12 @@ exports.addTask = function addTask (task)
 // -------------
 
 // Increase the count in Servers table
-exports.increaseServersCount = function increaseServersCount (id)
+exports.increaseServersCount = function increaseServersCount (col, id)
 {
 
    // console.log("DEBUG: Stage Update count in Servers table");
    return Servers.increment(
-      "count",
+      col,
       {logging: false,
          "where": {id}}
    );
