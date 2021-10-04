@@ -128,7 +128,7 @@ async function announcement (data)
                data.message.channel.send(`Announcment has been sent!`).then((msg) =>
                {
 
-                  msg.delete({"timeout": time.long}).catch((err) => console.log(
+                  setTimeout(() => msg.delete(), time.long).catch((err) => console.log(
                      "Bot Message Deleted Error, command.send.js = ",
                      err
                   ));

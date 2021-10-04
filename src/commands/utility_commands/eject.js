@@ -21,14 +21,14 @@ module.exports.eject = async function eject (data)
 
    // console.log("DEBUG: Eject");
 
-   const serverID = data.cmd.num;
-   const target = data.message.client.guilds.cache.get(serverID);
+   const serverId = data.cmd.num;
+   const target = data.message.client.guilds.cache.get(serverId);
 
    data.color = "warn";
-   data.text = `\`\`\`${serverID} - Server connection terminated\`\`\``;
+   data.text = `\`\`\`${serverId} - Server connection terminated\`\`\``;
 
    const col = "ejectcount";
-   db.increaseServersCount(col, serverID);
+   db.increaseServersCount(col, serverId);
 
    if (!target)
    {
@@ -38,7 +38,7 @@ module.exports.eject = async function eject (data)
       // ----------------
 
       data.color = "info";
-      data.text = oneLine`\`\`\`${serverID} Server has already been ejected.\n\`\`\``;
+      data.text = oneLine`\`\`\`${serverId} Server has already been ejected.\n\`\`\``;
       return sendMessage(data);
 
    }
@@ -59,7 +59,7 @@ module.exports.eject = async function eject (data)
             "warning",
             target.name
          ));
-      // console.log(`DEBUG: ${serverID}`);
+      // console.log(`DEBUG: ${serverId}`);
       await target.leave();
 
    }
@@ -71,7 +71,7 @@ module.exports.eject = async function eject (data)
       // --------------------------------
 
       data.color = "warn";
-      data.text = oneLine`\`\`\`${serverID} - ${target.name}\nUnable to warn Owner, Server connection terminated\`\`\``;
+      data.text = oneLine`\`\`\`${serverId} - ${target.name}\nUnable to warn Owner, Server connection terminated\`\`\``;
       await target.leave();
       return sendMessage(data);
 
@@ -98,8 +98,8 @@ module.exports.warn = async function warn (data)
 
    // console.log("DEBUG: Warn");
 
-   const serverID = data.cmd.num;
-   const target = data.message.client.guilds.cache.get(serverID);
+   const serverId = data.cmd.num;
+   const target = data.message.client.guilds.cache.get(serverId);
 
    if (!target)
    {
@@ -109,7 +109,7 @@ module.exports.warn = async function warn (data)
       // ----------------
 
       data.color = "info";
-      data.text = oneLine`\`\`\`Server ID: ${serverID}\nRita is not in this server, Please Blacklist.\n\`\`\``;
+      data.text = oneLine`\`\`\`Server ID: ${serverId}\nRita is not in this server, Please Blacklist.\n\`\`\``;
       return sendMessage(data);
 
    }
@@ -148,9 +148,9 @@ module.exports.warn = async function warn (data)
       // --------------------------------
 
       data.color = "warn";
-      data.text = oneLine`\`\`\`Server: ${target.name} \nServer ID:${serverID}\nUnable to warn Owner.\`\`\``;
+      data.text = oneLine`\`\`\`Server: ${target.name} \nServer ID:${serverId}\nUnable to warn Owner.\`\`\``;
       await db.updateServerTable(
-         serverID,
+         serverId,
          "warn",
          true,
          // eslint-disable-next-line consistent-return
@@ -160,7 +160,7 @@ module.exports.warn = async function warn (data)
             if (err)
             {
 
-               return console.log("error", err, "warning", serverID);
+               return console.log("error", err, "warning", serverId);
 
             }
 
@@ -178,13 +178,13 @@ module.exports.warn = async function warn (data)
    // Send message
    // -------------
    data.color = "warn";
-   data.text = `\`\`\`Owner: ${target.owner.user.tag}\nServer: ${target.name} \nServer ID: ${serverID}\nServer Owner Has Been Warned\`\`\``;
+   data.text = `\`\`\`Owner: ${target.owner.user.tag}\nServer: ${target.name} \nServer ID: ${serverId}\nServer Owner Has Been Warned\`\`\``;
 
    const col = "warncount";
-   db.increaseServersCount(col, serverID);
+   db.increaseServersCount(col, serverId);
 
    await db.updateServerTable(
-      serverID,
+      serverId,
       "warn",
       true,
       // eslint-disable-next-line consistent-return
@@ -194,7 +194,7 @@ module.exports.warn = async function warn (data)
          if (err)
          {
 
-            return console.log("error", err, "warning", serverID);
+            return console.log("error", err, "warning", serverId);
 
          }
 
@@ -221,10 +221,10 @@ module.exports.unwarn = function unwarn (data)
 
    // console.log("DEBUG: Unwarn");
 
-   const serverID = data.cmd.num;
+   const serverId = data.cmd.num;
 
    return db.updateServerTable(
-      serverID,
+      serverId,
       "warn",
       false,
       function error (err)
@@ -242,7 +242,7 @@ module.exports.unwarn = function unwarn (data)
          // -------------
 
          data.color = "warn";
-         data.text = `${`:white_check_mark:  **${serverID} Un-Warn**\n`}`;
+         data.text = `${`:white_check_mark:  **${serverId} Un-Warn**\n`}`;
          return sendMessage(data);
 
       }

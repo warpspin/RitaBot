@@ -23,7 +23,7 @@ module.exports = function run (data)
    // Disallow this command in Direct/Private messages
    // -------------------------------------------------
 
-   if (data.message.channel.type === "dm")
+   if (data.message.channel.type === "DM")
    {
 
       data.color = "error";

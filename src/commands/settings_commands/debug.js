@@ -32,7 +32,7 @@ const webhook = async function webhook (chan)
 const debuging = async function debuging (data)
 {
 
-   const webhookIDVar = data.cmd.server[0].webhookid;
+   const webhookIdVar = data.cmd.server[0].webhookid;
    const webhookTokenVar = data.cmd.server[0].webhooktoken;
    const commandVariable1 = data.cmd.params.split(" ")[0].toLowerCase();
 
@@ -42,7 +42,7 @@ const debuging = async function debuging (data)
       // console.log(`DEBUG on 1 ${process.env.DISCORD_DEBUG_WEBHOOK_ID}`);
       // Checks if there iS an item in the channels collection that corresponds with the supplied parameters, returns a boolean
       const check = (element) => element.name === "ritabot-debug";
-      Setup:if (webhookIDVar !== process.env.DISCORD_DEBUG_WEBHOOK_ID)
+      Setup:if (webhookIdVar !== process.env.DISCORD_DEBUG_WEBHOOK_ID)
       {
 
          if (process.env.DISCORD_DEBUG_WEBHOOK_ID === undefined || null)
@@ -62,7 +62,7 @@ const debuging = async function debuging (data)
          data.color = "info";
          data.text = "```Debug status is already on.\nFor Heroku users this is only active for 24 hours,\nor until the next automatic restart.```";
 
-         process.env.DISCORD_DEBUG_WEBHOOK_ID = webhookIDVar;
+         process.env.DISCORD_DEBUG_WEBHOOK_ID = webhookIdVar;
          process.env.DISCORD_DEBUG_WEBHOOK_TOKEN = webhookTokenVar;
 
          // -------------

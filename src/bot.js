@@ -16,15 +16,14 @@ const env = `${__dirname.slice(
 require("dotenv").config({
    "path": env
 });
-const discord = require("discord.js");
+const {Client, Intents} = require("discord.js");
 
-const client = new discord.Client({
+const myIntents = new Intents(32509);
+
+const client = new Client({
    "restRequestTimeout": time.mid,
    "shards": "auto",
-   "messageEditHistoryMaxSize": 0,
-   "messageCacheLifetime": 30,
-   "messageSweepInterval": 90,
-   "messageCacheMaxSize": 0
+   "intents": myIntents
 });
 const auth = require("./core/auth");
 

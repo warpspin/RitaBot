@@ -205,10 +205,10 @@ exports.getUser = function getUser (client, userID, cb)
 // Get channel
 // ------------
 
-exports.getChannel = function getChannel (client, channelID, userID, cb)
+exports.getChannel = function getChannel (client, channelId, userID, cb)
 {
 
-   const channel = client.channels.cache.get(channelID);
+   const channel = client.channels.cache.get(channelId);
 
    if (channel)
    {
@@ -251,12 +251,12 @@ exports.getChannel = function getChannel (client, channelID, userID, cb)
 // Get message
 // ------------
 
-exports.getMessage = function getMessage (client, messageID, channelID, userID, cb)
+exports.getMessage = function getMessage (client, messageID, channelId, userID, cb)
 {
 
    module.exports.getChannel(
       client,
-      channelID,
+      channelId,
       userID,
       (channel) =>
       {

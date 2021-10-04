@@ -21,22 +21,23 @@ module.exports.blacklist = async function blacklist (data)
 
    // console.log("DEBUG: Blacklist");
 
-   const serverID = data.cmd.num;
-   const target = data.message.client.guilds.cache.get(serverID);
+   const serverId = data.cmd.num;
+   const target = data.message.client.guilds.cache.get(serverId);
+   const owner = data.message.client.guilds.cache.get(serverId).fetchOwner();
    if (!target)
    {
 
       data.color = "warn";
-      data.text = oneLine`${`:regional_indicator_x:  **${serverID} Blacklisted**\n`}`;
+      data.text = oneLine`${`:regional_indicator_x:  **${serverId} Blacklisted**\n`}`;
 
    }
-   else if (target.owner)
+   else if (target && owner)
    {
 
       data.color = "warn";
       data.text = `${`:regional_indicator_x:  **${target.name} Blacklisted**\nThe server owner has been notified\n` +
-      "```md\n> "}${target.id}\n@${target.owner.user.username}#${
-         target.owner.user.discriminator}\n${target.memberCount} members\n\`\`\``;
+      "```md\n> "}${target.id}\n@${owner.user.username}#${
+         owner.user.discriminator}\n${target.memberCount} members\n\`\`\``;
       data.title = "Server Blacklisted";
 
       const writeErr = `One of your server's - ${target.name} has been Blacklisted. If you wish to appeal then please join our discord server and speak to an admin: https://discord.gg/mgNR64R`;
@@ -53,7 +54,7 @@ module.exports.blacklist = async function blacklist (data)
             "warning",
             target.name
          ));
-      console.log(`${serverID}`);
+      console.log(`${serverId}`);
       await target.leave();
 
    }
@@ -70,7 +71,7 @@ module.exports.blacklist = async function blacklist (data)
    }
 
    await db.updateServerTable(
-      serverID,
+      serverId,
       "blacklisted",
       true,
       // eslint-disable-next-line consistent-return
@@ -107,10 +108,10 @@ module.exports.unblacklist = function unblacklist (data)
 
    // console.log("DEBUG: unblacklist");
 
-   const serverID = data.cmd.num;
+   const serverId = data.cmd.num;
 
    return db.updateServerTable(
-      serverID,
+      serverId,
       "blacklisted",
       false,
       function error (err)
@@ -128,7 +129,7 @@ module.exports.unblacklist = function unblacklist (data)
          // -------------
 
          data.color = "warn";
-         data.text = oneLine`${`:white_check_mark:  **${serverID} Un-Blacklisted**\n`}`;
+         data.text = oneLine`${`:white_check_mark:  **${serverId} Un-Blacklisted**\n`}`;
          return sendMessage(data);
 
       }
@@ -136,7 +137,7 @@ module.exports.unblacklist = function unblacklist (data)
       "error",
       err,
       "warning",
-      serverID
+      serverId
    ));
 
 };

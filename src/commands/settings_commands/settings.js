@@ -129,11 +129,11 @@ function getSettings (data)
          {
 
             data.text += `${guild.name}\n${guild.id}\n${guild.memberCount} members\n`;
-            if (guild.owner)
+            if (guild.fetchOwner())
             {
 
-               data.text += `${guild.owner.user.username}#`;
-               data.text += `${guild.owner.user.discriminator}\n\n`;
+               data.text += `${guild.fetchOwner().user.username}#`;
+               data.text += `${guild.fetchOwner().user.discriminator}\n\n`;
 
             }
             else

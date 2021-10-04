@@ -4,8 +4,8 @@
 
 // Codebeat:disable[LOC,ABC,BLOCK_NESTING,ARITY]
 const colors = require("./colors");
-const discord = require("discord.js");
-const richEmbedMessage = new discord.MessageEmbed();
+const {MessageEmbed} = require("discord.js");
+const embed = new MessageEmbed();
 const logger = require("./logger");
 const error = require("./error");
 const time = {
@@ -21,7 +21,7 @@ const auth = require("./auth");
 function sendMessage (data)
 {
 
-   return data.message.channel.send(richEmbedMessage).
+   return data.message.channel.send({"embeds": [embed]}).
       // eslint-disable-next-line consistent-return
       catch((err) =>
       {
@@ -39,7 +39,7 @@ function sendMessage (data)
                   Channel: **${data.channel.name}**\n
                   Chan ID: **${data.channel.id}**\n
                   Server ID: **${data.message.sourceID}**\n
-                  Owner: **${data.message.guild.owner} - ${data.message.guild.owner.user.tag}**\n
+                  Owner: **${data.message.guild.owner}**\n
                   The server owner has been notified. \n`
                }
             );
@@ -51,14 +51,14 @@ function sendMessage (data)
             // Send message
             // -------------
 
-            if (!data.channel.guild.owner)
+            if (!data.channel.guild.fetchOwner())
             {
 
                return console.log(writeErr);
 
             }
             // console.log("DEBUG: Line 60 - Dev.Send.js");
-            return data.channel.guild.owner.
+            return data.channel.guild.fetchOwner().
                send(writeErr).
                catch((err) => console.log(
                   "error",
@@ -89,11 +89,22 @@ module.exports = function run (data)
    {
 
       // console.log("DEBUG: Developer Override");
-      data.message.delete({"timeout": time.short}).catch((err) => console.log(
-         "Command Message Deleted Error, command.send.js = ",
-         err
-      ));
-      richEmbedMessage.
+      try
+      {
+
+         setTimeout(() => data.message.delete(), time.short);
+
+      }
+      catch (err)
+      {
+
+         console.log(
+            "Bot Message Deleted Error 1, dev.send.js",
+            err
+         );
+
+      }
+      embed.
          setColor(colors.get(data.color)).
          setDescription(`Developer Identity confirmed:\n\n${data.text}`).
          setTimestamp();
@@ -105,12 +116,23 @@ module.exports = function run (data)
 
    }
    // console.log("DEBUG: Insufficient Permission");
-   data.message.delete({"timeout": time.short}).catch((err) => console.log(
-      "Command Message Deleted Error, command.send.js = ",
-      err
-   ));
+   try
+   {
+
+      setTimeout(() => data.message.delete(), time.short);
+
+   }
+   catch (err)
+   {
+
+      console.log(
+         "Bot Message Deleted Error 2 dev.send.js",
+         err
+      );
+
+   }
    data.text = ":cop:  This Command is for bot developers only.";
-   richEmbedMessage.
+   embed.
       setColor(colors.get(data.color)).
       setDescription(data.text).
       setTimestamp().

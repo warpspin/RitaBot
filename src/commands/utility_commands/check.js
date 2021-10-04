@@ -22,17 +22,17 @@ module.exports = function run (data)
    // console.log("DEBUG: Check");
 
    // eslint-disable-next-line no-unused-vars
-   const serverID = data.cmd.num;
+   const serverId = data.cmd.num;
 
 
    db.getServerInfo(
-      serverID,
+      serverId,
       function getServerInfo (server)
       {
 
 
-         // console.log(`DEBUG: Warn - ${serverID}`);
-         const Result = `\`\`\`Server: ${serverID}\nError Count: ${server[0].errorcount}\nWarn Count: ${server[0].warncount}\nEject Count: ${server[0].ejectcount}\nWarn Status: ${server[0].warn}\nBlacklist Status: ${server[0].blacklisted}\n\n\`\`\``;
+         // console.log(`DEBUG: Warn - ${serverId}`);
+         const Result = `\`\`\`Server: ${serverId}\nError Count: ${server[0].errorcount}\nWarn Count: ${server[0].warncount}\nEject Count: ${server[0].ejectcount}\nWarn Status: ${server[0].warn}\nBlacklist Status: ${server[0].blacklisted}\n\n\`\`\``;
          data.text = `${Result}\n\n`;
 
 
@@ -50,10 +50,10 @@ module.exports = function run (data)
          "error",
          err,
          "warning",
-         serverID
+         serverId
       );
 
-      data.text = oneLine`\`\`\`${serverID} is not in our Database\n\n\`\`\``;
+      data.text = oneLine`\`\`\`${serverId} is not in our Database\n\n\`\`\``;
       return sendMessage(data);
 
    });

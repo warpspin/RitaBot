@@ -36,7 +36,7 @@ module.exports.run = function run (data)
    }}).then((msg) =>
    {
 
-      msg.delete({"timeout": time.long}).catch((err) => console.log(
+      setTimeout(() => msg.delete(), time.long).catch((err) => console.log(
          "UpdateBot Bot Message Deleted Error, settings.js = ",
          err
       ));

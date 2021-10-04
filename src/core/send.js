@@ -12,7 +12,8 @@ const colors = require("./colors");
 const fn = require("./helpers");
 const db = require("./db");
 const logger = require("./logger");
-const discord = require("discord.js");
+const {MessageEmbed} = require("discord.js");
+const embed = new MessageEmbed();
 const webHookName = "RITA Messaging System";
 const error = require("./error");
 
@@ -63,7 +64,7 @@ function checkPerms (data, sendBox)
          `the ${sendData.channel.id} channel on your server **` +
          `${sendData.channel.guild.name}**. Please fix.`;
       // console.log("DEBUG: Line 65 - Send.js");
-      return sendData.channel.guild.owner.
+      return sendData.channel.guild.fetchOwner().
          send(writeErr).
          catch((err) => console.log("error", err, "warning", data.message.guild.name));
 
@@ -84,7 +85,7 @@ function checkPerms (data, sendBox)
 
          let canWriteDest = true;
 
-         if (forwardChannel.type === "text")
+         if (forwardChannel.type === "GUILD_TEXT")
          {
 
             canWriteDest = fn.checkPerm(
@@ -140,7 +141,7 @@ function checkPerms (data, sendBox)
                   Channel: **${forwardChannel.name}**\n
                   Chan ID: **${forwardChannel.id}**\n
                   Server ID: **${data.message.sourceID}**\n
-                  Owner: **${data.message.guild.owner} - ${data.message.guild.owner.user.tag}**\n
+                  Owner: **${data.message.guild.owner}**\n
                   The server owner has been notified . \n`
             });
 
@@ -284,7 +285,7 @@ function embedOn (data)
          for (let i = 0; i < attachments.length; i += 1)
          {
 
-            const attachmentObj = new discord.MessageAttachment(
+            const attachmentObj = new Discord.MessageAttachment(
                attachments[i].url,
                attachments[i].name
             );
@@ -358,10 +359,7 @@ function embedOn (data)
 
          }
 
-         data.channel.send({
-
-            embed
-         }).then(() =>
+         data.channel.send({"embeds": [embed]}).then(() =>
          {
 
             sendEmbeds(data);
@@ -396,8 +394,8 @@ function embedOn (data)
                      "color": "ok",
                      "msg": `:exclamation: Write Permission Error - Origin \n
                   Server: **${data.guild.name}** \n
-                  Channel: **${data.channel.name}**\n
-                  Chan ID: **${data.channel.id}**\n
+                  Channel: **${data.message.channel.name}**\n
+                  Chan ID: **${data.message.channel.id}**\n
                   Server ID: **${data.message.sourceID}**\n
                   Owner: **${data.message.guild.owner}**\n
                   The server owner has been notified. \n`
@@ -415,7 +413,7 @@ function embedOn (data)
                   Server: **${data.guild.name}** \n
                   Channel: **${data.channel.name}**\n
                   Chan ID: **${data.channel.id}**\n
-                  Owner: **${data.channel.guild.owner}**\n`
+                  Owner: **${data.message.guild.owner}**\n`
                   }).catch((err) => console.log(
                      "error",
                      err,
@@ -527,7 +525,7 @@ function embedOff (data)
          for (let i = 0; i < attachments.length; i += 1)
          {
 
-            const attachmentObj = new discord.MessageAttachment(
+            const attachmentObj = new Discord.MessageAttachment(
                attachments[i].url,
                attachments[i].name
             );
@@ -647,7 +645,7 @@ function embedOff (data)
          for (let i = 0; i < attachments.length; i += 1)
          {
 
-            const attachmentObj = new discord.MessageAttachment(
+            const attachmentObj = new Discord.MessageAttachment(
                attachments[i].url,
                attachments[i].name
             );
@@ -695,17 +693,17 @@ function embedOff (data)
       // Webhook Creation and Sending
       // -----------------------------
 
-      if (data.channel.type === "dm")
+      if (data.channel.type === "DM")
       {
 
          // console.log("DEBUG: Line 690 - Send.js");
-         const embed = new discord.MessageEmbed().
+         embed.
             setAuthor(data.message.author.username, data.message.author.displayAvatarURL()).
             setColor(colors.get(data.color)).
             setDescription(data.text).
             setFooter(data.footer.text);
          sendAttachments(data);
-         data.channel.send({embed});
+         data.channel.send({"embeds": [embed]});
 
       }
 
@@ -778,7 +776,7 @@ module.exports = function run (data)
       let id = "bot";
       db.increaseStatsCount(col, id);
 
-      if (data.message.channel.type === "text")
+      if (data.message.channel.type === "GUILD_TEXT")
       {
 
          id = data.message.channel.guild.id;
@@ -793,13 +791,13 @@ module.exports = function run (data)
    else if (data.message.guild.me.permissions.has("MANAGE_WEBHOOKS"))
    {
 
-      // console.log("DEBUG: Embed off");
+      console.log("DEBUG: Embed off");
 
       const col = "embedoff";
       let id = "bot";
       db.increaseStatsCount(col, id);
 
-      if (data.message.channel.type === "text")
+      if (data.message.channel.type === "GUILD_TEXT")
       {
 
          id = data.message.channel.guild.id;
@@ -819,10 +817,10 @@ module.exports = function run (data)
    data.text = `:warning: ${data.message.client.user.username} does not have sufficient permissions to send Webhook Messages. Please give ${data.message.client.user.username} the \`MANAGE_WEBHOOKS\` permission.`;
    data.color = "warn";
 
-   return data.channel.send({"embed": {
-      "color": colors.get(data.color),
-      "description": data.text
+   embed.
+      setColor(colors.get(data.color)).
+      setDescription(data.text);
 
-   }});
+   return data.channel.send({"embeds": [embed]});
 
 };

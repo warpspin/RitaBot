@@ -60,14 +60,14 @@ function startTranslation (data, i, row)
       "text": "via "
    };
 
-   if (data.message.channel.type === "text")
+   if (data.message.channel.type === "GUILD_TEXT")
    {
 
       data.footer.text += `#${data.message.channel.name}`;
 
    }
 
-   if (data.message.channel.type === "dm")
+   if (data.message.channel.type === "DM")
    {
 
       data.footer.text += "DM";
@@ -156,7 +156,7 @@ function analyzeRows (data, i)
       data.embeds = data.message.embeds;
       data.attachments = data.message.attachments;
 
-      if (data.message.channel.type === "dm")
+      if (data.message.channel.type === "DM")
       {
 
          const replyIndex = data.message.content.indexOf(":");

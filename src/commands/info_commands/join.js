@@ -37,13 +37,13 @@ module.exports = function run (guild, config)
 
    }
 
-   if (guild.owner)
+   if (guild.fetchOwner())
    {
 
       db.updateServerTable(
          guild.id,
          "owner",
-         `${guild.owner.user.username}#${guild.owner.user.discriminator}`,
+         `${guild.fetchOwner().user.username}#${guild.fetchOwner().user.discriminator}`,
          function error (err)
          {
 

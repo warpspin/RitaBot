@@ -62,7 +62,7 @@ exports.listen = function listen (client)
 
          }
 
-         const singleShard = client.options.shardCount;
+         const singleShard = client.options.shardCount.toString();
 
          console.log(stripIndent`
          ----------------------------------------
@@ -113,11 +113,11 @@ exports.listen = function listen (client)
    // -----------------
 
    client.on(
-      "message",
+      "messageCreate",
       (message) =>
       {
 
-         if (message.channel.type !== "dm")
+         if (message.channel.type !== "DM")
          {
 
             if (db.server_obj[message.guild.id])
@@ -151,7 +151,7 @@ exports.listen = function listen (client)
                let id = "bot";
                db.increaseStatsCount(col, id);
 
-               if (message.channel.type === "text")
+               if (message.channel.type === "GUILD_TEXT")
                {
 
                   id = message.channel.guild.id;

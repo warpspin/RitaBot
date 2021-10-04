@@ -269,7 +269,7 @@ module.exports = function run (data)
 
    let id = "bot";
 
-   if (data.message.channel.type === "text")
+   if (data.message.channel.type === "GUILD_TEXT")
    {
 
       id = data.message.channel.guild.id;
@@ -326,7 +326,7 @@ module.exports = function run (data)
 
          data.canWrite = true;
 
-         if (data.message.channel.type === "text")
+         if (data.message.channel.type === "GUILD_TEXT")
          {
 
             data.canWrite = fn.checkPerm(

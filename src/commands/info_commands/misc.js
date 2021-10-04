@@ -159,7 +159,7 @@ module.exports.proc = function proc (data)
 
    :stopwatch:  Shard Uptime:  ${uptimeFormat(shardUptime)}
 
-   :pager:  Current Shard:  **\`${data.message.guild.shardID + 1} / ${data.message.client.options.shardCount}\`**
+   :pager:  Current Shard:  **\`${data.message.guild.shardId + 1} / ${data.message.client.options.shardCount}\`**
    `;
 
    // -------------

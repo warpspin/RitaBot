@@ -43,7 +43,7 @@ exports.idPure = function idPure (id)
 exports.getChName = function getChName (channel)
 {
 
-   if (channel.type === "dm")
+   if (channel.type === "DM")
    {
 
       return channel.recipient.username;

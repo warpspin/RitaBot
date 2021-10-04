@@ -354,7 +354,7 @@ function updateServerStats (message)
    let id = "bot";
    db.increaseStatsCount(col, id);
 
-   if (message.channel.type === "text")
+   if (message.channel.type === "GUILD_TEXT")
    {
 
       id = message.channel.guild.id;
@@ -445,7 +445,7 @@ module.exports = function run (data) // eslint-disable-line complexity
 
    let guild = null;
 
-   if (data.message.channel.type === "text")
+   if (data.message.channel.type === "GUILD_TEXT")
    {
 
       guild = data.message.channel.guild;

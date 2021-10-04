@@ -62,7 +62,7 @@ module.exports = function run (data)
       // Get current server information
       let serverStats = "";
       let serverTranslationStats = "";
-      if (data.message.channel.type === "text" && data.cmd.server.length === 1)
+      if (data.message.channel.type === "GUILD_TEXT" && data.cmd.server.length === 1)
       {
 
          const serverLang = langCheck(data.cmd.server[0].lang).valid[0];
@@ -98,17 +98,17 @@ module.exports = function run (data)
       data.color = "info";
 
       let debugStats = "";
-      if (data.message.channel.type === "text" && data.cmd.server.length === 1)
+      if (data.message.channel.type === "GUILD_TEXT" && data.cmd.server.length === 1)
       {
 
-         const webhookIDVar = data.cmd.server[0].webhookid;
+         const webhookIdVar = data.cmd.server[0].webhookid;
          const webhookTokenVar = data.cmd.server[0].webhooktoken;
          const webhookVar = data.cmd.server[0].webhookactive;
 
          debugStats =
                `**\`\`\`${data.message.channel.guild.name} - Server Info\`\`\`**\n` +
                `:id: Webhook Debug ID: ` +
-               `**\`\`\`${webhookIDVar}\`\`\`**\n ` +
+               `**\`\`\`${webhookIdVar}\`\`\`**\n ` +
                `:key: Webhook Debug Token: ` +
                `**\`\`\`${webhookTokenVar}\`\`\`**\n ` +
                `:information_source: Webhook Debug Active State: **\`${webhookVar}\`**`;
@@ -132,7 +132,7 @@ module.exports = function run (data)
       }
 
       // Only '!t stats global' is allowed with dm
-      if (data.message.channel.type === "dm")
+      if (data.message.channel.type === "DM")
       {
 
          data.color = "warn";
@@ -184,18 +184,18 @@ module.exports = function run (data)
 
          }
          // eslint-disable-next-line no-unused-vars
-         const serverID = data.cmd.params.split(" ")[1].toLowerCase();
-         const target = data.message.client.guilds.cache.get(serverID);
+         const serverId = data.cmd.params.split(" ")[1].toLowerCase();
+         const target = data.message.client.guilds.cache.get(serverId);
 
          db.getServerInfo(
-            serverID,
+            serverId,
             function getServerInfo (server)
             {
 
                if (!target)
                {
 
-                  const targetServer = `**\`\`\`${serverID} - Server Tranlation Stats\`\`\`**\n` +
+                  const targetServer = `**\`\`\`${serverId} - Server Tranlation Stats\`\`\`**\n` +
                      `Server Joined Rita Network: \`\`\`${server[0].createdAt}\`\`\`\n` +
                      `:bar_chart:  In total **\`${server[0].message}\`** messages in this server have been sent\n\n` +
                      `:chart_with_upwards_trend:  RITA has translated **\`${server[0].translation}\`**  for this server\n\n` +
@@ -262,10 +262,10 @@ module.exports = function run (data)
                "error",
                err,
                "warning",
-               serverID
+               serverId
             );
 
-            data.text = `\`\`\`${serverID} is not registered in the database.\n\n\`\`\``;
+            data.text = `\`\`\`${serverId} is not registered in the database.\n\n\`\`\``;
             return sendMessage(data);
 
          });

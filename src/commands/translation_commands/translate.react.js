@@ -34,10 +34,10 @@ module.exports = function run (data, client)
       // Stop proccessing if country has no langs / null
       // ------------------------------------------------
 
-      const serverID = data.guild_id;
+      const serverId = data.guild_id;
 
       db.getServerInfo(
-         serverID,
+         serverId,
          function getServerInfo (server)
          {
 
@@ -124,7 +124,7 @@ module.exports = function run (data, client)
                      let id = "bot";
                      db.increaseStatsCount(col, id);
 
-                     if (message.channel.type === "text")
+                     if (message.channel.type === "GUILD_TEXT")
                      {
 
                         id = data.message.guild.id;
@@ -147,7 +147,7 @@ module.exports = function run (data, client)
             "error",
             err,
             "warning",
-            serverID
+            serverId
          );
 
       });

@@ -6,7 +6,7 @@
 // Codebeat:disable[LOC,ABC,BLOCK_NESTING,ARITY]
 /* eslint-disable consistent-return */
 /* eslint-disable no-bitwise */
-const discord = require("discord.js");
+const {MessageEmbed, WebhookClient} = require("discord.js");
 const auth = require("./auth");
 const colors = require("./colors").get;
 const spacer = "​                                                          ​";
@@ -34,19 +34,20 @@ function devConsole (data)
 function hookSend (data)
 {
 
-   const hook = new discord.WebhookClient(
-      process.env.DISCORD_DEBUG_WEBHOOK_ID,
-      process.env.DISCORD_DEBUG_WEBHOOK_TOKEN
-   );
-   const embed = new discord.MessageEmbed({
-      "color": colors(data.color),
-      "description": data.msg,
-      "footer": {
-         "text": data.footer
-      },
-      "title": data.title
+
+   const webhookClient = new WebhookClient({
+      "id": process.env.DISCORD_DEBUG_WEBHOOK_ID,
+      "token": process.env.DISCORD_DEBUG_WEBHOOK_TOKEN
    });
-   hook.send(embed).catch((err) =>
+
+   const embed = new MessageEmbed().
+      setColor(colors(data.color)).
+      setDescription(data.msg).
+      setTitle(data.title || ``);
+
+   webhookClient.send({
+      "embeds": [embed]
+   }).catch((err) =>
    {
 
       console.error(`hook.send error:\n${err}`);
@@ -133,20 +134,20 @@ function warnLog (warning)
 function logJoin (guild)
 {
 
-   if (guild.owner)
+   if (guild.fetchOwner())
    {
 
       hookSend({
          "color": "ok",
          "msg":
          `${`:white_check_mark:  **${guild.name}**\n` +
-         "```md\n> "}${guild.id}\n@${guild.owner.user.username}#${
-            guild.owner.user.discriminator}\n${guild.memberCount} members\n\`\`\`${spacer}${spacer}`,
+         "```md\n> "}${guild.id}\n@${guild.fetchOwner().user.username}#${
+            guild.fetchOwner().user.discriminator}\n${guild.memberCount} members\n\`\`\`${spacer}${spacer}`,
          "title": "Joined Guild"
 
 
       });
-      console.log(`----------------------------------------\nGuild Join: ${guild.name}\nGuild ID: ${guild.id}\nGuild Owner: ${guild.owner.user.username}#${guild.owner.user.discriminator}\nSize: ${guild.memberCount}\n----------------------------------------`);
+      console.log(`----------------------------------------\nGuild Join: ${guild.name}\nGuild ID: ${guild.id}\nGuild Owner: ${guild.fetchOwner().user.username}#${guild.fetchOwner().user.discriminator}\nSize: ${guild.memberCount}\n----------------------------------------`);
 
    }
    else
@@ -173,18 +174,18 @@ function logJoin (guild)
 function logLeave (guild)
 {
 
-   if (guild.owner)
+   if (guild.fetchOwner())
    {
 
       hookSend({
          "color": "warn",
          "msg":
          `${`:regional_indicator_x:  **${guild.name}**\n` +
-         "```md\n> "}${guild.id}\n@${guild.owner.user.username}#${
-            guild.owner.user.discriminator}\n${guild.memberCount} members\n\`\`\`${spacer}${spacer}`,
+         "```md\n> "}${guild.id}\n@${guild.fetchOwner().user.username}#${
+            guild.fetchOwner().user.discriminator}\n${guild.memberCount} members\n\`\`\`${spacer}${spacer}`,
          "title": "Left Guild"
       });
-      console.log(`----------------------------------------\nGuild Left: ${guild.name}\nGuild ID: ${guild.id}\nGuild Owner: ${guild.owner.user.username}#${guild.owner.user.discriminator}\nSize: ${guild.memberCount}\n----------------------------------------`);
+      console.log(`----------------------------------------\nGuild Left: ${guild.name}\nGuild ID: ${guild.id}\nGuild Owner: ${guild.fetchOwner().user.username}#${guild.fetchOwner().user.discriminator}\nSize: ${guild.memberCount}\n----------------------------------------`);
 
    }
    else

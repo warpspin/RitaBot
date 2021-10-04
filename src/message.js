@@ -1,10 +1,11 @@
-/* eslint-disable complexity */
-/* eslint-disable sort-keys */
 // -----------------
 // Global variables
 // -----------------
 
 // Codebeat:disable[LOC,ABC,BLOCK_NESTING]
+/* eslint-disable no-undef */
+/* eslint-disable complexity */
+/* eslint-disable sort-keys */
 const db = require("./core/db");
 const fn = require("./core/helpers");
 const cmdArgs = require("./commands/args");
@@ -16,11 +17,11 @@ const auth = require("./core/auth");
 // --------------------
 
 // eslint-disable-next-line no-unused-vars
-module.exports = function run (config, message)
+module.exports = async function run (config, message)
 {
 
    module.exports.message = message;
-   if (message.channel.type === "dm" || message.type !== "DEFAULT")
+   if (message.channel.type === "DM" || message.type !== "DEFAULT")
    {
 
       return;
@@ -53,7 +54,7 @@ module.exports = function run (config, message)
    {
 
       // eslint-disable-next-line no-bitwise
-      if (message.webhookID)
+      if (message.webhookId)
       {
 
          return;
@@ -78,7 +79,7 @@ module.exports = function run (config, message)
          let id = "bot";
          db.increaseStatsCount(col, id);
 
-         if (message.channel.type === "text")
+         if (message.channel.type === "GUILD_TEXT")
          {
 
             id = message.channel.guild.id;
@@ -104,7 +105,7 @@ module.exports = function run (config, message)
          let id = "bot";
          db.increaseStatsCount(col, id);
 
-         if (message.channel.type === "text")
+         if (message.channel.type === "GUILD_TEXT")
          {
 
             id = message.channel.guild.id;
@@ -136,11 +137,11 @@ module.exports = function run (config, message)
    // Embed member permissions in message data
    // -----------------------------------------
 
-   if (message.channel.type === "text" && message.member)
+   if (message.channel.type === "GUILD_TEXT" && message.member)
    {
 
       message.isAdmin =
-         message.member.permissions.has("ADMINISTRATOR");
+      message.member.permissions.has("ADMINISTRATOR");
 
       message.isManager =
          fn.checkPerm(
@@ -150,7 +151,7 @@ module.exports = function run (config, message)
          );
       message.sourceID = message.guild.id;
       // eslint-disable-next-line no-self-assign
-      message.guild.owner = message.guild.owner;
+      message.guild.owner = await message.guild.fetchOwner();
 
       // Add role color
       message.roleColor = fn.getRoleColor(message.member);
@@ -168,7 +169,7 @@ module.exports = function run (config, message)
       "member": message.member,
       message
    };
-   if (data.message.channel.type !== "dm")
+   if (data.message.channel.type !== "DM")
    {
 
       if (data.member)
@@ -189,10 +190,10 @@ module.exports = function run (config, message)
    // ---------------------
    // Blacklist Redundancy
    // ---------------------
-   const serverID = data.message.guild.id;
+   const serverId = data.message.guild.id;
 
    db.getServerInfo(
-      serverID,
+      serverId,
       function getServerInfo (server)
       {
 
@@ -200,7 +201,7 @@ module.exports = function run (config, message)
          {
 
             data.message.guild.leave();
-            console.log(`Blacklist Redundancy, Server ${serverID} ejected`);
+            console.log(`Blacklist Redundancy, Server ${serverId} ejected`);
 
          }
 
@@ -212,7 +213,7 @@ module.exports = function run (config, message)
          "error",
          err,
          "warning",
-         serverID
+         serverId
       );
 
    });

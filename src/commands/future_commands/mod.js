@@ -33,7 +33,7 @@ module.exports.ban = function ban (data)
          {
 
             member.
-               ban("Banned By RITA Ban Command").
+               ban({"reason": "Banned By RITA Ban Command"}).
                then(() =>
                {
 

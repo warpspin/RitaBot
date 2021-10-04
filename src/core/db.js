@@ -266,19 +266,19 @@ exports.initializeDatabase = async function initializeDatabase (client)
          "tasks_origin_dest",
          {logging: false}
       );
-      const guilds = client.guilds.cache.array().length;
-      const guildsArray = client.guilds.cache.array();
+      const guilds = client.guilds.cache.values().length;
+      const guildsArray = client.guilds.cache.values();
       let i = 0;
       for (i = 0; i < guilds; i += 1)
       {
 
          guild = guildsArray[i];
-         const guildID = guild.id;
+         const guildId = guild.id;
          // eslint-disable-next-line no-await-in-loop
-         await Stats.upsert({"id": guildID,
+         await Stats.upsert({"id": guildId,
             logging: false});
          Servers.findAll({logging: false,
-            "where": {"id": guildID}}).then((projects) =>
+            "where": {"id": guildId}}).then((projects) =>
          {
 
             if (projects.length === 0)
@@ -286,16 +286,16 @@ exports.initializeDatabase = async function initializeDatabase (client)
 
                // console.log("DEBUG: Add Server");
                Servers.upsert({logging: false,
-                  "id": guildID,
+                  "id": guildId,
                   "lang": "en",
                   "active": true});
                Stats.upsert({logging: false,
-                  "id": guildID});
+                  "id": guildId});
 
             }
             // console.log("DEBUG: Active Check all Active Guilds");
             Servers.upsert({logging: false,
-               "id": guildID,
+               "id": guildId,
                "active": true});
 
          });
@@ -435,13 +435,13 @@ exports.updateBot2BotVar = function updateBot2BotVar (id, bot2botstyle, _cb)
 };
 
 // -----------------------------------------------
-// Update webhookID & webhookToken Variable In DB
+// Update webhookId & webhookToken Variable In DB
 // -----------------------------------------------
 
 exports.updateWebhookVar = function updateWebhookVar (id, webhookid, webhooktoken, webhookactive, _cb)
 {
 
-   // console.log("DEBUG: Stage Update webhookID & webhookToken Variable In DB");
+   // console.log("DEBUG: Stage Update webhookId & webhookToken Variable In DB");
    return Servers.update(
       {webhookid,
          webhooktoken,
@@ -573,7 +573,7 @@ exports.channelTasks = function channelTasks (data)
 
    // console.log("DEBUG: Stage Get Channel Tasks");
    let id = data.message.channel.id;
-   if (data.message.channel.type === "dm")
+   if (data.message.channel.type === "DM")
    {
 
       // console.log("DEBUG: Line 666 - DB.js");
