@@ -318,7 +318,7 @@ function embedOn (data)
          };
       }*/
 
-      if (data.text && data.text.length > 1 || data.message.content.length)
+      if (data.text && data.text.length > 1)
       {
 
          {
