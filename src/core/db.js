@@ -266,17 +266,17 @@ exports.initializeDatabase = async function initializeDatabase (client)
          "tasks_origin_dest",
          {logging: false}
       );
-      const guilds = client.guilds.cache.values().length;
-      const guildsArray = client.guilds.cache.values();
+      const guilds = Array.from(client.guilds._cache.keys()).length;
+      const guildsArray = Array.from(client.guilds._cache);
       let i = 0;
       for (i = 0; i < guilds; i += 1)
       {
 
          guild = guildsArray[i];
-         const guildId = guild.id;
+         const guildId = guild[1].id;
          // eslint-disable-next-line no-await-in-loop
-         await Stats.upsert({"id": guildId,
-            logging: false});
+         // await Stats.upsert({"id": guildId,
+         //   logging: false});
          Servers.findAll({logging: false,
             "where": {"id": guildId}}).then((projects) =>
          {
@@ -324,6 +324,12 @@ exports.initializeDatabase = async function initializeDatabase (client)
       {
 
          guild = guildClient[i];
+         if (!server_obj[guild.id])
+         {
+
+            server_obj[guild.id] = {};
+
+         }
          server_obj[guild.id].guild = guild;
          server_obj[guild.id].size = guild.memberCount;
          if (!server_obj.size)

@@ -57,7 +57,7 @@ function login (token)
       console.log(err);
       console.log(`retrying login...`);
       setTimeout(
-         login,
+         login(token),
          5000
       );
 

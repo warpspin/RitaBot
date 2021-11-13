@@ -21,7 +21,7 @@ function sendTranslation (data)
 
       if (
          data.message.content === "" &&
-         data.message.attachments.array().length > 0
+         data.message.attachments.size > 0
       )
       {
 

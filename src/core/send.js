@@ -16,6 +16,7 @@ const {MessageEmbed} = require("discord.js");
 const embed = new MessageEmbed();
 const webHookName = "RITA Messaging System";
 const error = require("./error");
+const Discord = require("discord.js");
 
 // -----------------
 // Permission Check
@@ -261,7 +262,7 @@ function embedOn (data)
          return;
 
       }
-      let attachments = data.attachments.array();
+      let attachments = Array.from(data.attachments.values());
 
       if (attachments && attachments.length > 0)
       {
@@ -285,11 +286,13 @@ function embedOn (data)
          for (let i = 0; i < attachments.length; i += 1)
          {
 
+            // eslint-disable-next-line no-unused-vars
             const attachmentObj = new Discord.MessageAttachment(
                attachments[i].url,
                attachments[i].name
             );
-            data.channel.send(`**${data.message.author.username}** sent a file:`, attachmentObj);
+            data.channel.send({"content": `**${data.message.author.username}** sent a file:`,
+               "files": [attachments[i].url]});
 
          }
 
@@ -315,7 +318,7 @@ function embedOn (data)
          };
       }*/
 
-      if (data.text && data.text.length > 1)
+      if (data.text && data.text.length > 1 || data.message.content.length)
       {
 
          {
@@ -485,7 +488,7 @@ function embedOn (data)
             ));
 
       }
-      else if (data.attachments.array().length > 0)
+      else if (data.attachments.size > 0)
       {
 
          sendAttachments(data);
@@ -511,13 +514,13 @@ function embedOff (data)
    function createFiles (dataAttachments)
    {
 
-      if (!dataAttachments && !dataAttachments.array().length > 0)
+      if (!dataAttachments && !dataAttachments.values().array().length > 0)
       {
 
          return;
 
       }
-      const attachments = dataAttachments.array();
+      const attachments = Array.from(dataAttachments.values());
       const files = [];
       if (attachments && attachments.length > 0)
       {
@@ -525,11 +528,7 @@ function embedOff (data)
          for (let i = 0; i < attachments.length; i += 1)
          {
 
-            const attachmentObj = new Discord.MessageAttachment(
-               attachments[i].url,
-               attachments[i].name
-            );
-            files.push(attachmentObj);
+            files.push(attachments[i].url);
 
          }
 
@@ -567,8 +566,8 @@ function embedOff (data)
       if (files !== null && data.text === undefined)
       {
 
-         return webhook.send(null, {
-            "avatarURL": data.message.author.displayAvatarURL(),
+         return webhook.send({
+            "avatarURL": `https://cdn.discordapp.com/avatars/${data.message.author.id}/${data.message.author.avatar}`,
             files,
             "username": data.message.author.username
          }).catch((err) => console.log("error", err, "send", data.message.guild.name));
@@ -581,10 +580,11 @@ function embedOff (data)
          {
 
             // console.log("DEBUG: Is bot.author embed off");
-            webhook.send(data.text, {
+            webhook.send({
                // If you get a error at the below line then the bot does not have write permissions.
 
-               "avatarURL": data.message.client.user.displayAvatarURL(),
+               "avatarURL": `https://cdn.discordapp.com/avatars/${data.message.client.user.id}/${data.message.client.user.avatar}`,
+               "content": data.text,
                files,
                "username": data.message.client.user.username || data.message
             });
@@ -594,13 +594,13 @@ function embedOff (data)
          {
 
             // console.log("DEBUG: Is data.message.author embed off");
-            webhook.send(data.text, {
+            webhook.send({"avatarURL": `https://cdn.discordapp.com/avatars/${data.message.author.id}/${data.message.author.avatar}`,
+               "content": data.text,
                // If you get a error at the below line then the bot does not have write permissions.
 
-               "avatarURL": data.message.author.displayAvatarURL(),
+
                files,
-               "username": data.message.author.username || data.message
-            });
+               "username": data.message.author.username || data.message});
 
          }
 
@@ -645,11 +645,7 @@ function embedOff (data)
          for (let i = 0; i < attachments.length; i += 1)
          {
 
-            const attachmentObj = new Discord.MessageAttachment(
-               attachments[i].url,
-               attachments[i].name
-            );
-            data.channel.send(attachmentObj);
+            data.channel.send({"files": [attachments[i].url]});
 
          }
 

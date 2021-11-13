@@ -123,6 +123,12 @@ exports.listen = function listen (client)
             if (db.server_obj[message.guild.id])
             {
 
+               if (!db.server_obj[message.guild.id].db)
+               {
+
+                  return;
+
+               }
                if (config.translateCmdShort !== db.server_obj[message.guild.id].db.prefix)
                {
 
