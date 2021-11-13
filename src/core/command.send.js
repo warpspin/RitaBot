@@ -30,7 +30,7 @@ function sendMessage (data)
          function getServerInfo (server)
          {
 
-            if (server[0].persist === false)
+            if (server[0].persist === false || server[0].persist === 0)
             {
 
                try
