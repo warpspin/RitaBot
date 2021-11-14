@@ -8,25 +8,23 @@ const {MessageEmbed} = require("discord.js");
 const embed = new MessageEmbed();
 const logger = require("./logger");
 const error = require("./error");
-const time = {
-   "long": 60000,
-   "short": 5000
-};
 const auth = require("./auth");
 
 // ---------------------
 // Send Data to Channel
 // ---------------------
 
-function sendMessage (data)
+async function sendMessage (data)
 {
 
+   const owner = await data.message.guild.owner;
+   const tag = `${owner.user.username}#${owner.user.discriminator}`;
    return data.message.channel.send({"embeds": [embed]}).
       // eslint-disable-next-line consistent-return
       catch((err) =>
       {
 
-         if (err.code && err.code === error.perm || error.access)
+         if (err.code && err.code === error.perm || err.code === error.access)
          {
 
             // console.log("Error 50013");
@@ -35,11 +33,12 @@ function sendMessage (data)
                {
                   "color": "ok",
                   "msg": `:exclamation: Write Permission Error - DS.js\n
-                  Server: **${data.channel.guild.name}** \n
-                  Channel: **${data.channel.name}**\n
-                  Chan ID: **${data.channel.id}**\n
-                  Server ID: **${data.message.sourceID}**\n
-                  Owner: **${data.message.guild.owner}**\n
+                  Server: **${data.channel.guild.name || "Unknown"}** \n
+                  Channel: **${data.channel.name || "Unknown"}**\n
+                  Chan ID: **${data.channel.id || "Unknown"}**\n
+                  Server ID: **${data.message.guild.id || data.message.sourceID || "Zycore Broke It Again"}**\n
+                  Owner: **${owner || "Unknown"}**\n
+                  Dscord Tag: **${tag || "Unknown"}**\n
                   The server owner has been notified. \n`
                }
             );
@@ -51,14 +50,14 @@ function sendMessage (data)
             // Send message
             // -------------
 
-            if (!data.channel.guild.fetchOwner())
+            if (!owner)
             {
 
                return console.log(writeErr);
 
             }
-            // console.log("DEBUG: Line 60 - Dev.Send.js");
-            return data.channel.guild.fetchOwner().
+            // console.log("DEBUG: Line 59 - Dev.Send.js");
+            return owner.
                send(writeErr).
                catch((err) => console.log(
                   "error",
@@ -85,14 +84,14 @@ module.exports = function run (data)
    // Send Data to Channel
    // ---------------------
 
-   if (auth.devID.includes(data.message.author.id))
+   if (data.message.isDev)
    {
 
       // console.log("DEBUG: Developer Override");
       try
       {
 
-         setTimeout(() => data.message.delete(), time.short);
+         setTimeout(() => data.message.delete(), auth.time.short);
 
       }
       catch (err)
@@ -119,7 +118,7 @@ module.exports = function run (data)
    try
    {
 
-      setTimeout(() => data.message.delete(), time.short);
+      setTimeout(() => data.message.delete(), auth.time.short);
 
    }
    catch (err)

@@ -23,7 +23,7 @@ module.exports.blacklist = async function blacklist (data)
 
    const serverId = data.cmd.num;
    const target = data.message.client.guilds.cache.get(serverId);
-   const owner = data.message.client.guilds.cache.get(serverId).fetchOwner();
+   const owner = target.fetchOwner();
    if (!target)
    {
 

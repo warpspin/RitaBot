@@ -11,7 +11,6 @@ const fn = require("./core/helpers");
 const cmdArgs = require("./commands/args");
 const auth = require("./core/auth");
 
-
 // --------------------
 // Listen for messages
 // --------------------
@@ -141,14 +140,19 @@ module.exports = async function run (config, message)
    {
 
       message.isAdmin =
-      message.member.permissions.has("ADMINISTRATOR");
+         message.member.permissions.has("ADMINISTRATOR");
 
-      message.isManager =
+      message.isGlobalChanManager =
+         message.member.permissions.has("MANAGE_CHANNELS");
+
+      message.isChanManager =
          fn.checkPerm(
             message.member,
             message.channel,
             "MANAGE_CHANNELS"
          );
+      message.isDev = auth.devID.includes(message.author.id);
+      message.isBotOwner = auth.botOwner.includes(message.author.id);
       message.sourceID = message.guild.id;
       // eslint-disable-next-line no-self-assign
       message.guild.owner = await message.guild.fetchOwner();
@@ -197,13 +201,21 @@ module.exports = async function run (config, message)
       function getServerInfo (server)
       {
 
+         if (server.length === 0)
+         {
+
+            return;
+
+         }
+
          if (server[0].blacklisted === true)
          {
 
-            data.message.guild.leave();
             console.log(`Blacklist Redundancy, Server ${serverId} ejected`);
+            data.message.guild.leave();
 
          }
+         message.server = server;
 
       }
    ).catch((err) =>

@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 // -----------------
 // Global variables
 // -----------------
@@ -6,7 +5,9 @@
 // Codebeat:disable[LOC,ABC,BLOCK_NESTING,ARITY]
 /* eslint-disable consistent-return */
 /* eslint-disable no-bitwise */
-const {MessageEmbed, WebhookClient} = require("discord.js");
+/* eslint-disable no-unused-vars */
+const {MessageEmbed} = require("discord.js");
+const discord = require("discord.js");
 const auth = require("./auth");
 const colors = require("./colors").get;
 const spacer = "​                                                          ​";
@@ -34,20 +35,67 @@ function devConsole (data)
 function hookSend (data)
 {
 
-
-   const webhookClient = new WebhookClient({
+   const whData = {
       "id": process.env.DISCORD_DEBUG_WEBHOOK_ID,
       "token": process.env.DISCORD_DEBUG_WEBHOOK_TOKEN
+   };
+
+   const hook = new discord.WebhookClient(whData);
+   const embed = new MessageEmbed({
+      "color": colors(data.color),
+      "description": data.msg,
+      "footer": {
+         "text": data.footer
+      },
+      "title": data.title
    });
 
-   const embed = new MessageEmbed().
-      setColor(colors(data.color)).
-      setDescription(data.msg).
-      setTitle(data.title || ``);
+   return hook.send({"embeds": [embed]}).catch((err) =>
+   {
 
-   webhookClient.send({
-      "embeds": [embed]
-   }).catch((err) =>
+      console.error(`hook.send error:\n${err}`);
+
+   });
+
+}
+
+function activityHookSend (data)
+{
+
+   let AID = null;
+   let ATO = null;
+
+   if (!process.env.DISCORD_ACTIVITY_WEBHOOK_ID || !process.env.DISCORD_ACTIVITY_WEBHOOK_TOKEN)
+   {
+
+      AID = process.env.DISCORD_DEBUG_WEBHOOK_ID;
+      ATO = process.env.DISCORD_DEBUG_WEBHOOK_TOKEN;
+
+   }
+   else
+   {
+
+      AID = process.env.DISCORD_ACTIVITY_WEBHOOK_ID;
+      ATO = process.env.DISCORD_ACTIVITY_WEBHOOK_TOKEN;
+
+   }
+
+
+   const hook = new discord.WebhookClient(
+      AID,
+      ATO
+   );
+
+   const embed = new MessageEmbed({
+      "color": colors(data.color),
+      "description": data.msg,
+      "footer": {
+         "text": data.footer
+      },
+      "title": data.title
+   });
+
+   return hook.send({"embeds": [embed]}).catch((err) =>
    {
 
       console.error(`hook.send error:\n${err}`);
@@ -131,29 +179,29 @@ function warnLog (warning)
 // Guild Join Log
 // ---------------
 
-function logJoin (guild)
+async function logJoin (guild)
 {
 
-   if (guild.fetchOwner())
+   const owner = await guild.fetchOwner();
+   if (owner)
    {
 
-      hookSend({
+      activityHookSend({
          "color": "ok",
          "msg":
          `${`:white_check_mark:  **${guild.name}**\n` +
-         "```md\n> "}${guild.id}\n@${guild.fetchOwner().user.username}#${
-            guild.fetchOwner().user.discriminator}\n${guild.memberCount} members\n\`\`\`${spacer}${spacer}`,
+         "```md\n> "}${guild.id}\n@${owner.user.username}#${owner.user.discriminator}\n${guild.memberCount} members\n\`\`\`${spacer}${spacer}`,
          "title": "Joined Guild"
 
 
       });
-      console.log(`----------------------------------------\nGuild Join: ${guild.name}\nGuild ID: ${guild.id}\nGuild Owner: ${guild.fetchOwner().user.username}#${guild.fetchOwner().user.discriminator}\nSize: ${guild.memberCount}\n----------------------------------------`);
+      console.log(`----------------------------------------\nGuild Join: ${guild.name}\nGuild ID: ${guild.id}\nGuild Owner: ${owner.user.username}#${owner.user.discriminator}\nSize: ${guild.memberCount}\n----------------------------------------`);
 
    }
    else
    {
 
-      hookSend({
+      activityHookSend({
          "color": "ok",
          "msg":
          `${`:white_check_mark:  **${guild.name}**\n` +
@@ -171,27 +219,27 @@ function logJoin (guild)
 // Guild Leave Log
 // ----------------
 
-function logLeave (guild)
+async function logLeave (guild)
 {
 
-   if (guild.fetchOwner())
+   const owner = await guild.fetchOwner();
+   if (owner)
    {
 
-      hookSend({
+      activityHookSend({
          "color": "warn",
          "msg":
          `${`:regional_indicator_x:  **${guild.name}**\n` +
-         "```md\n> "}${guild.id}\n@${guild.fetchOwner().user.username}#${
-            guild.fetchOwner().user.discriminator}\n${guild.memberCount} members\n\`\`\`${spacer}${spacer}`,
+         "```md\n> "}${guild.id}\n@${owner.user.username}#${owner.user.discriminator}\n${guild.memberCount} members\n\`\`\`${spacer}${spacer}`,
          "title": "Left Guild"
       });
-      console.log(`----------------------------------------\nGuild Left: ${guild.name}\nGuild ID: ${guild.id}\nGuild Owner: ${guild.fetchOwner().user.username}#${guild.fetchOwner().user.discriminator}\nSize: ${guild.memberCount}\n----------------------------------------`);
+      console.log(`----------------------------------------\nGuild Left: ${guild.name}\nGuild ID: ${guild.id}\nGuild Owner: ${owner.user.username}#${owner.user.discriminator}\nSize: ${guild.memberCount}\n----------------------------------------`);
 
    }
    else
    {
 
-      hookSend({
+      activityHookSend({
          "color": "warn",
          "msg":
          `${`:regional_indicator_x:  **${guild.name}**\n` +
@@ -219,6 +267,7 @@ module.exports = function run (type, data, subtype = null, id)
 
    }
    const logTypes = {
+      "activity": activityHookSend,
       "custom": hookSend,
       "dev": devConsole,
       "error": errorLog,

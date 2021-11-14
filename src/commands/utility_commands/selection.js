@@ -1,51 +1,50 @@
 // ---------------------------------------
 // This is a test function, DO NOT REOMVE
 // ---------------------------------------
-/*
-const embed = new MessageEmbed().setDescription("Please Choose a Category in the dropdown menu.");
-const components = (state) => [
 
-    new MessageActionRow().addComponents(new MessageSelectMenu().
-    setCustomId("help-menu").
-    setPlaceholder("Please select a Cateegory").
-    setDisabled(state).
-    addOptions(paramMap.map((cmd) => ({
-        "value": cmd
-    }))))
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-undef */
+/* eslint-disable sort-keys */
+const {MessageActionRow, MessageSelectMenu} = require("discord.js");
 
-];
-
-const initialMessage = await data.message.channel.send({"embeds": [embed],
-    "components": components(false)});
-
-const filter = (interaction) => interaction.user.id === data.message.author.id;
-
-const collector = data.message.channel.createMessageComponentCollector({filter,
-    "componentType": "SELECT_MENU",
-    "time": 5000});
-
-collector.on("collect", (interaction) =>
+module.exports = function run (data)
 {
 
-    const [ cmd ] = interaction.value;
+   client.on("interactionCreate", async (interaction) =>
+   {
 
-    const catEmbed = new MessageEmbed().setTitle("Help Menu").
-    setDescription("Here are command").
-    addField(paramMap.map((cmd) => ({
-        "name": "",
-        "value": "",
-        "inline": true
-    })));
+      if (!interaction.isCommand())
+      {
 
+         return;
 
-    interaction.update({"embeds": [catRmbed]});
+      }
 
-});
+      if (interaction.commandName === "ping")
+      {
 
-collector.on("end", () =>
-{
+         const row = new MessageActionRow().
+            addComponents(new MessageSelectMenu().
+               setCustomId("select").
+               setPlaceholder("Nothing selected").
+               addOptions([
+                  {
+                     "label": "Select me",
+                     "description": "This is a description",
+                     "value": "first_option"
+                  },
+                  {
+                     "label": "You can select me too",
+                     "description": "This is also a description",
+                     "value": "second_option"
+                  }
+               ]),);
 
-    initialMessage.edit({"components": components(true)});
+         await interaction.reply({"content": "Pong!",
+            "components": [row]});
 
-});
-*/
+      }
+
+   });
+
+};

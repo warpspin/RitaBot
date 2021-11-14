@@ -1,20 +1,21 @@
+/* eslint-disable sort-keys */
 /* eslint-disable consistent-return */
 // -----------------
 // Global variables
 // -----------------
 
 // Codebeat:disable[LOC,ABC,BLOCK_NESTING]
-const stripIndent = require("common-tags").stripIndent;
-const oneLine = require("common-tags").oneLine;
+const {stripIndent} = require("common-tags");
+const {oneLine} = require("common-tags");
 const auth = require("./core/auth");
 const logger = require("./core/logger");
 const messageHandler = require("./message");
 const db = require("./core/db");
-// Const setStatus = require("./core/status");
 const react = require("./commands/translation_commands/translate.react");
 const botVersion = require("../package.json").version;
 const botCreator = "Rita Bot Project";
 const joinMessage = require("./commands/info_commands/join");
+const {MessageActionRow, MessageSelectMenu} = require("discord.js");
 
 // ----------
 // Core Code
@@ -49,7 +50,6 @@ exports.listen = function listen (client)
             "maxEmbeds": 5,
             "maxMulti": 6,
             "maxTasksPerChannel": 15,
-            "owner": auth.botOwner,
             "translateCmd": "!translate",
             "translateCmdShort": "!tr",
             "version": botVersion
@@ -58,7 +58,7 @@ exports.listen = function listen (client)
          if (!process.env.DISCORD_BOT_OWNER_ID)
          {
 
-            process.env.DISCORD_BOT_OWNER_ID = [];
+            process.env.DISCORD_BOT_OWNER_ID = "0";
 
          }
 
@@ -89,8 +89,7 @@ exports.listen = function listen (client)
 
          console.log(stripIndent`
             ----------------------------------------
-            All shards online, running DB connection
-         `);
+            All shards online, running DB connection`);
 
          logger(
             "custom",
@@ -401,7 +400,7 @@ exports.listen = function listen (client)
 
                console.log(`Server: ${guild.id} has a blacklisted status of: ${server[0].blacklisted}`);
                logger(
-                  "custom",
+                  "activity",
                   {
                      "color": "ok",
                      "msg": oneLine`**Server:** ${guild.id} has a blacklisted status of: **${server[0].blacklisted}**`
@@ -412,7 +411,7 @@ exports.listen = function listen (client)
                {
 
                   logger(
-                     "custom",
+                     "activity",
                      {
                         "color": "warn",
                         "msg": oneLine`**Server:** ${guild.id} has been kicked as it is blacklisted`
@@ -448,5 +447,42 @@ exports.listen = function listen (client)
 
       }
    );
+
+   client.on("interactionCreate", async (interaction) =>
+   {
+
+      if (!interaction.isCommand())
+      {
+
+         return;
+
+      }
+
+      if (interaction.commandName === "ping")
+      {
+
+         const row = new MessageActionRow().
+            addComponents(new MessageSelectMenu().
+               setCustomId("select").
+               setPlaceholder("Nothing selected").
+               addOptions([
+                  {
+                     "label": "Select me",
+                     "description": "This is a description",
+                     "value": "first_option"
+                  },
+                  {
+                     "label": "You can select me too",
+                     "description": "This is also a description",
+                     "value": "second_option"
+                  }
+               ]),);
+
+         await interaction.reply({"content": "Pong!",
+            "components": [row]});
+
+      }
+
+   });
 
 };
