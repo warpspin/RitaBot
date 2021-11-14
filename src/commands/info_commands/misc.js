@@ -329,7 +329,7 @@ module.exports.updatelink = async function updatelink (data)
    await data.message.channel.send(`Please enter your github username.`).then(() =>
    {
 
-      data.message.channel.awaitMessages(filter, {
+      data.message.channel.awaitMessages({
          "errors": ["time"],
          "max": 1,
          "time": auth.time.long
@@ -339,8 +339,8 @@ module.exports.updatelink = async function updatelink (data)
 
             data.gitusername = message.first();
             clean(data, 2);
-            data.text = `Your github Update link is: https://github.com/${data.gitusername}/RitaBot/compare/master...RitaBot-Project:master`;
-            return sendMessage(data);
+            return data.message.channel.send(`Your github Update link is: https://github.com/${data.gitusername}/RitaBot/compare/master...RitaBot-Project:master`);
+
 
          }).
          catch((collected) =>
@@ -348,6 +348,12 @@ module.exports.updatelink = async function updatelink (data)
 
             data.message.channel.send(`No Responce Provided Or Error: - Username`);
             clean(data, 1);
+
+         }).
+         catch((err) =>
+         {
+
+            console.log("Error");
 
          });
 

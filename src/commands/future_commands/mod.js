@@ -38,6 +38,7 @@ module.exports.ban = function ban (data)
                {
 
                   // We let the message author know we were able to kick the person
+                  data.color = "ok";
                   data.text = `Successfully banned ${user.tag}\n`;
                   return sendMessage(data);
 
@@ -48,6 +49,7 @@ module.exports.ban = function ban (data)
                   // An error happened
                   // This is generally due to the bot not being able to kick the member,
                   // Either due to missing permissions or role hierarchy
+                  data.color = "err";
                   data.text = "I was unable to ban that user.\nThis is generally due to the bot missing permissions or role hierarchy.\n";
                   console.log(err);
                   return sendMessage(data);
@@ -60,6 +62,7 @@ module.exports.ban = function ban (data)
          {
 
             // The mentioned user isn't in this guild
+            data.color = "info";
             data.text = "That user isn't in this guild!\n";
             return sendMessage(data);
 
@@ -70,6 +73,7 @@ module.exports.ban = function ban (data)
       else
       {
 
+         data.color = "warn";
          data.text = "You didn't mention the user to ban!\n";
          return sendMessage(data);
 
@@ -97,16 +101,81 @@ module.exports.unban = function unban (data)
    // Command Code
    // -------------
 
-   // console.log("DEBUG: Unban");
+   if (data.message.isAdmin === true)
+   {
 
-   data.color = "ok";
-   data.text = `Unban`;
 
-   // -------------
-   // Send message
-   // -------------
+      const user = data.cmd.num;
+      // If we have a user mentioned
+      if (user)
+      {
 
-   return sendMessage(data);
+         if (user)
+         {
+
+            data.message.guild.members.
+               unban(user).
+               then(() =>
+               {
+
+                  // We let the message author know we were able to kick the person
+                  data.color = "ok";
+                  data.text = `Successfully unbanned ${user}\n`;
+                  return sendMessage(data);
+
+               }).
+               catch((err) =>
+               {
+
+                  if (err.code === 10026)
+                  {
+
+                     data.color = "info";
+                     data.text = "This user ID is not banned.\n";
+                     // console.log(err);
+                     return sendMessage(data);
+
+                  }
+
+                  data.color = "err";
+                  data.text = "I was unable to unban that user.\nThis is generally due to the bot missing permissions, missing or incorrect ID or role hierarchy.\n";
+                  console.log(err);
+                  return sendMessage(data);
+                  // Log the error
+
+               });
+
+         }
+         else
+         {
+
+            // The mentioned user isn't in this guild
+            data.color = "info";
+            data.text = "That user isn't in this guild!\n";
+            return sendMessage(data);
+
+         }
+         // Otherwise, if no user was mentioned
+
+      }
+      else
+      {
+
+         data.color = "info";
+         data.text = "You didn't provide a user id of the user to unban!\n";
+         return sendMessage(data);
+
+      }
+
+   }
+   else
+   {
+
+      data.color = "warn";
+      data.text = ":cop:  This command is reserved for server admins and owners only.\n";
+      return sendMessage(data);
+
+   }
 
 };
 
@@ -253,7 +322,12 @@ module.exports.kick = function kick (data)
       }
 
    }
-   data.text = ":cop:  This command is reserved for server admins and owners only.\n";
-   return sendMessage(data);
+   else
+   {
+
+      data.text = ":cop:  This command is reserved for server admins and owners only.\n";
+      return sendMessage(data);
+
+   }
 
 };

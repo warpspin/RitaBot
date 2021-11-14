@@ -23,7 +23,7 @@ const {Client, Options, Intents} = require("discord.js");
 const myIntents = new Intents(32509);
 
 const client = new Client({
-   "restRequestTimeout": time.mid,
+   "restRequestTimeout": time.long,
    "shards": "auto",
    "makeCache": Options.cacheWithLimits({
       "GuildBanManager": 20, // guild.bans

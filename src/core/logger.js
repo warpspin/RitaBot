@@ -35,12 +35,12 @@ function devConsole (data)
 function hookSend (data)
 {
 
-   const whData = {
+   const hsData = {
       "id": process.env.DISCORD_DEBUG_WEBHOOK_ID,
       "token": process.env.DISCORD_DEBUG_WEBHOOK_TOKEN
    };
 
-   const hook = new discord.WebhookClient(whData);
+   const hook = new discord.WebhookClient(hsData);
    const embed = new MessageEmbed({
       "color": colors(data.color),
       "description": data.msg,
@@ -80,11 +80,12 @@ function activityHookSend (data)
 
    }
 
+   const ahsData = {
+      "id": AID,
+      "token": ATO
+   };
 
-   const hook = new discord.WebhookClient(
-      AID,
-      ATO
-   );
+   const hook = new discord.WebhookClient(ahsData);
 
    const embed = new MessageEmbed({
       "color": colors(data.color),
@@ -179,10 +180,10 @@ function warnLog (warning)
 // Guild Join Log
 // ---------------
 
-async function logJoin (guild)
+function logJoin (guild, owner)
 {
 
-   const owner = await guild.fetchOwner();
+   // const owner = await guild.fetchOwner();
    if (owner)
    {
 
@@ -219,10 +220,9 @@ async function logJoin (guild)
 // Guild Leave Log
 // ----------------
 
-async function logLeave (guild)
+function logLeave (guild, owner)
 {
 
-   const owner = await guild.fetchOwner();
    if (owner)
    {
 

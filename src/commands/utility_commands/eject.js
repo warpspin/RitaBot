@@ -23,7 +23,7 @@ module.exports.eject = async function eject (data)
 
    const serverId = data.cmd.num;
    const target = data.message.client.guilds.cache.get(serverId);
-   const owner = await target.members.fetch(target.ownerID);
+   const owner = await target.fetchOwner();
 
    data.color = "warn";
    data.text = `\`\`\`${serverId} - Server connection terminated\`\`\``;
@@ -101,7 +101,7 @@ module.exports.warn = async function warn (data)
 
    const serverId = data.cmd.num;
    const target = data.message.client.guilds.cache.get(serverId);
-   const owner = await target.members.fetch(target.ownerID);
+   const owner = await target.fetchOwner();
 
    if (!target)
    {

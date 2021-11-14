@@ -344,12 +344,13 @@ exports.listen = function listen (client)
 
    client.on(
       "guildDelete",
-      (guild) =>
+      async (guild) =>
       {
 
+         const owner = await guild.fetchOwner();
          logger(
             "guildLeave",
-            guild
+            guild, owner
          );
          db.updateServerTable(guild.id, "active", false, function error (err)
          {
@@ -380,12 +381,13 @@ exports.listen = function listen (client)
 
    client.on(
       "guildCreate",
-      (guild) =>
+      async (guild) =>
       {
 
+         const owner = await guild.fetchOwner();
          logger(
             "guildJoin",
-            guild
+            guild, owner
          );
          db.servercount(guild);
          db.addServer(

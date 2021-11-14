@@ -68,7 +68,7 @@ function getCheck (data)
             }
 
             const bot = target.members.cache.get(data.message.client.user.id);
-            const owner = await target.members.fetch(target.ownerID);
+            const owner = await target.fetchOwner();
             const tag = `${owner.user.username}#${owner.user.discriminator}`;
             const perms = bot.permissions.serialize();
             const botResult1 =
@@ -172,7 +172,7 @@ function getCheck (data)
         "```md\n" +
 
         `# Permissions to set up:\n`;
-      if (data.message.guild.ownerID === data.message.member.id)
+      if (data.message.guild.ownerId === data.message.member.id)
       {
 
          const userResult2 =
@@ -181,7 +181,7 @@ function getCheck (data)
          data.text = userResult1 + userResult2;
 
       }
-      else if (memberPermissions.ADMINISTRATOR === true && data.message.guild.ownerID !== data.message.member.id)
+      else if (memberPermissions.ADMINISTRATOR === true && data.message.guild.ownerId !== data.message.member.id)
       {
 
          const userResult2 =
@@ -274,7 +274,7 @@ function getCheck (data)
 module.exports = function run (data)
 {
 
-   Override: if (data.message.guild.ownerID !== data.message.author.id)
+   Override: if (data.message.guild.ownerId !== data.message.author.id)
    {
 
       if (data.cmd.params === "me" || data.cmd.params === "channel" || data.message.isDev)
@@ -311,7 +311,7 @@ module.exports = function run (data)
 
             // const user = data.message.guild.members.cache.get(data.message.author.id);
             const bot = target.members.cache.get(data.message.client.user.id);
-            const owner = await target.members.fetch(target.ownerID);
+            const owner = await target.fetchOwner();
             const tag = `${owner.user.username}#${owner.user.discriminator}`;
             const perms = bot.permissions.serialize();
             const botResult1 =

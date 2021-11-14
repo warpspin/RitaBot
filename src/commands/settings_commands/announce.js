@@ -52,7 +52,7 @@ async function announcement (data)
    await data.message.channel.send(`Please enter Anouncment Title.`).then(() =>
    {
 
-      data.message.channel.awaitMessages(filter, {
+      data.message.channel.awaitMessages({
          "errors": ["time"],
          "max": 1,
          "time": time.long
@@ -81,7 +81,7 @@ async function announcement (data)
       await data.message.channel.send(`Please Enter message you wish to send.`).then(() =>
       {
 
-         data.message.channel.awaitMessages(filter, {
+         data.message.channel.awaitMessages({
             "errors": ["time"],
             "max": 1,
             "time": time.long
@@ -110,19 +110,18 @@ async function announcement (data)
    {
 
       clean(data, 2);
-      await data.message.channel.send(`Please Review the message, Do you want to send.? \`YES\` / \`NO\``).then(() =>
+      data.message.channel.send(`Please Review the message, Do you want to send.? \`YES\` / \`NO\``);
+      await data.message.channel.send({"embeds": [{
+         "color": 9514728,
+         "description": `${data.announcement.message}`,
+         "footer": {
+            "text": `This is a Message from the RITA Dev Team\nRITA is developed by the RITA Bot Project\n\nTo opt out of annoucments please use the command {cmd} announce off`
+         },
+         "title": `${data.announcement.title}`
+      }]}).then(() =>
       {
 
-         data.message.channel.send({"embed": {
-            "color": 9514728,
-            "description": `${data.announcement.message}`,
-            "footer": {
-               "text": `This is a Message from the RITA Dev Team\nRITA is developed by the RITA Bot Project\n\nTo opt out of annoucments please use the command {cmd} announce off`
-            },
-            "title": `${data.announcement.title}`
-         }});
-
-         data.message.channel.awaitMessages(filter, {
+         data.message.channel.awaitMessages({
             "errors": ["time"],
             "max": 1,
             "time": time.long
@@ -199,7 +198,7 @@ async function announcement (data)
                            {
 
                               console.log(`Message ${i} Sent to guild ${guild[1].id} - ${guild[1].name}`);
-                              return guild[1].systemChannel.send({"embed": {
+                              return guild[1].systemChannel.send({"embeds": [{
                                  "color": 9514728,
                                  "description": `${data.announcement.message}`,
                                  "footer": {
@@ -207,7 +206,7 @@ async function announcement (data)
                                     This is a Message from the RITA Dev Team\nRITA is developed by the RITA Bot Project\n\nTo opt out of annoucments please use the command ${server[0].prefix} announce off`
                                  },
                                  "title": `${data.announcement.title}`
-                              }});
+                              }]});
 
                            }
                            console.log(`Message ${i} Unable to Sent to guild ${guild[1].id} - ${guild[1].name} as they have opted out of announcement messages.`);

@@ -108,7 +108,7 @@ module.exports = async function run (guild, config)
    );
    */
 
-   return defaultChannel.send(`Hello, I'm RITA. Thanks for inviting me.`, {"embed": {
+   return defaultChannel.send({"embeds": [{
       "color": 9514728,
       "description": "We developed RITA to be the best free Translator Bot on Discord (& soon Guilded).\nSpeaking to other people should not have to cost you an arm and a leg, Our aim is to break that language barrier without you having to pay out for the privilege.",
       "fields": [
@@ -138,14 +138,15 @@ module.exports = async function run (guild, config)
          "text": "RITA is developed by the RITA Bot Project"
       },
       "title": "A MESSAGE FROM THE DEV TEAM"
-   }});
+   }]});
 
 };
 
 module.exports.newBot = function newBot (data)
 {
 
-   data.message.channel.send({"embed": {
+   // data.channel.send({"embeds": [embed]});
+   data.message.channel.send({"embeds": [{
       "color": 9514728,
       "description": "Let's get started:\nRita supports a few different methods of translations.\n**‏‏‎ ‎‎‎‎‎‎**",
       "fields": [
@@ -186,6 +187,6 @@ module.exports.newBot = function newBot (data)
          "text": `RITA is developed by the RITA Bot Project`
       },
       "title": "THANK YOU FOR CHOOSING TO USE RITA."
-   }});
+   }]});
 
 };

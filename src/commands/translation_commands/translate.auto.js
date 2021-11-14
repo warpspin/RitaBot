@@ -249,7 +249,7 @@ module.exports = function run (data)
          {
 
             /*
-            return data.message.channel.send({"embed": {
+            return data.message.channel.send({"embeds": [{
                "author": {
                   "icon_url": data.message.client.user.displayAvatarURL(),
                   "name": data.message.client.user.username
@@ -258,7 +258,7 @@ module.exports = function run (data)
                "description": `:no_entry_sign: This command has been disabled Pending a fix \n
               We apologise for any inconvenience this may cause.`
 
-            }});
+            }]});
 
             // ---------------
             // Old Code Below

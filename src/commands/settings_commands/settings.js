@@ -117,19 +117,19 @@ function getSettings (data)
 
          data.text = "Active Servers - ";
 
-         const activeGuilds = data.message.client.guilds.cache.array();
+         const activeGuilds = Array.from(data.message.client.guilds._cache);
 
          data.text += `${activeGuilds.length}\n\n`;
 
          activeGuilds.forEach((guild) =>
          {
 
-            data.text += `${guild.name}\n${guild.id}\n${guild.memberCount} members\n`;
-            if (guild.fetchOwner())
+            data.text += `Name: ${guild[1].name}\nID: ${guild[1].id}\nUsers: ${guild[1].memberCount}\n`;
+            if (guild[1].ownerId)
             {
 
-               data.text += `${guild.fetchOwner().user.username}#`;
-               data.text += `${guild.fetchOwner().user.discriminator}\n\n`;
+               data.text += `Owner ID: ${guild[1].ownerId}\n\n`;
+
 
             }
             else
@@ -166,10 +166,9 @@ function getSettings (data)
             ),
             data.text
          );
-         data.message.channel.send(
-            "Server List.",
-            {"files": ["./src/files/serverlist.txt"]}
-         );
+         // let attachments = Array.from(data.attachments.values());
+         data.message.channel.send("Server List");
+         data.message.channel.send({"files": ["./src/files/serverlist.txt"]});
 
       }
       else
@@ -561,13 +560,7 @@ function getSettings (data)
       {
 
          let i = 0;
-         const guilds = [];
-         for (const guild of data.message.client.guilds.cache)
-         {
-
-            guilds.push(guild);
-
-         }
+         const guilds = Array.from(data.message.client.guilds._cache);
 
          const wait = setInterval(async function delay ()
 
@@ -583,10 +576,10 @@ function getSettings (data)
                clearInterval(wait);
 
             }
-            else if (guild[1].ownerID)
+            else if (guild[1].ownerId)
             {
 
-               const owner = await guild[1].members.fetch(guild[1].ownerID);
+               const owner = await guild[1].fetchOwner();
                const target = guild[1].id;
 
                if (!target)
@@ -642,13 +635,7 @@ function getSettings (data)
       {
 
          let i = 0;
-         const guilds = [];
-         for (const guild of data.message.client.guilds.cache)
-         {
-
-            guilds.push(guild);
-
-         }
+         const guilds = Array.from(data.message.client.guilds._cache);
 
          const wait = setInterval(async function delay ()
 
@@ -791,7 +778,7 @@ module.exports = function run (data)
    // Command allowed by admins only
    // -------------------------------
 
-   Override: if (data.message.guild.ownerID !== data.message.author.id)
+   Override: if (data.message.guild.ownerId !== data.message.author.id)
    {
 
       if (data.message.isDev)

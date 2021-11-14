@@ -204,7 +204,7 @@ module.exports = function run (data)
 
                   }
 
-                  const targetServer = `**\`\`\`${serverId} - Server Tranlation Stats\`\`\`**\n` +
+                  const targetServer = `**\`\`\`Server Tranlation Stats\nName: ${server[0].servername || "Unknown"}\nID: ${serverId}\`\`\`**\n` +
                      `Server Joined Rita Network: \`\`\`${server[0].createdAt}\`\`\`\n` +
                      `:bar_chart:  In total **\`${server[0].message}\`** messages in this server have been sent\n\n` +
                      `:chart_with_upwards_trend:  RITA has translated **\`${server[0].translation}\`**  for this server\n\n` +
@@ -223,11 +223,11 @@ module.exports = function run (data)
 
                }
 
-               const owner = await target.members.fetch(target.ownerID);
+               const owner = await target.fetchOwner();
                if (owner)
                {
 
-                  const targetServer = `**\`\`\`${target.name} - Server Tranlation Stats\`\`\`**\n` +
+                  const targetServer = `**\`\`\`Server Tranlation Stats\nName: ${target.name || "Unknown"}\nID: ${serverId}\`\`\`**\n` +
                   `Server Owner: ${owner}\n` +
                   `Owner Tag: ${owner.user.tag}\n\n` +
                   `Server Joined Rita Network: \`\`\`${server[0].createdAt}\`\`\`\n` +
