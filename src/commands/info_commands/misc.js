@@ -51,7 +51,7 @@ module.exports.shards = function shards (data)
    activeGuilds.forEach((guild) =>
    {
 
-      console.log(`ID: ${guild[1].shardId}`);
+      // console.log(`ID: ${guild[1].shardId}`);
       if (i === guild[1].shardId)
       {
 
@@ -65,7 +65,7 @@ module.exports.shards = function shards (data)
             return shard.push(guild[1].shard);
 
          }
-         console.log(`ID: ${guild[1].count}`);
+         // console.log(`ID: ${guild[1].count}`);
 
       }
       shard[i - 1].count += 1;
