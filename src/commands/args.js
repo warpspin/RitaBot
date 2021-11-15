@@ -32,7 +32,6 @@ const cmdMod = require("./future_commands/mod");
 const cmdMisc = require("./info_commands/misc");
 const cmdPrefix = require("./settings_commands/prefix");
 const cmdReact = require("./settings_commands/react");
-const cmdSelect = require("./utility_commands/selection");
 const cmdSettings = require("./settings_commands/settings");
 const cmdStats = require("./info_commands/stats");
 const cmdTranslateLast = require("./translation_commands/translate.last");
@@ -379,7 +378,6 @@ module.exports = function run (data)
             "prefix": cmdPrefix,
             "proc": cmdMisc.proc,
             "react": cmdReact,
-            "select": cmdSelect,
             "settings": cmdSettings,
             "shards": cmdMisc.shards,
             "stats": cmdStats,
