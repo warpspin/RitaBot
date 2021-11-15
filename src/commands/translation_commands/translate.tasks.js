@@ -34,7 +34,7 @@ function destID (dest, author)
    {
 
       return dest.slice(
-         1,
+         3,
          -1
       );
 
@@ -214,6 +214,7 @@ module.exports = function run (data)
 
    let origin = null;
    let dest = null;
+   let id = null;
 
    if (data.cmd.params && data.cmd.params.toLowerCase().includes("#"))
    {
@@ -223,6 +224,32 @@ module.exports = function run (data)
          data.message.author.id
       );
       dest = "target";
+
+   }
+   else if (data.cmd.params && data.cmd.params.toLowerCase().includes("me"))
+   {
+
+      origin = "me";
+      dest = destID(
+         data.cmd.params,
+         data.message.author.id
+      );
+      id = data.message.guild.id;
+
+   }
+   else if (data.cmd.params && data.cmd.params.toLowerCase().includes("@"))
+   {
+
+      // ------------------
+      // Prepare task data
+      // ------------------
+
+      origin = "target";
+      dest = destID(
+         data.cmd.params,
+         data.message.author.id
+      );
+      id = data.message.guild.id;
 
    }
    else
@@ -247,6 +274,7 @@ module.exports = function run (data)
    db.getTasks(
       origin,
       dest,
+      id,
       async function error (err, res)
       {
 
@@ -268,16 +296,30 @@ module.exports = function run (data)
          {
 
             const orig = destResolver(origin);
+            const des = destResolver(dest);
             data.color = "error";
-            data.text =
-            ":warning:  __**No tasks**__ for " +
-            `**<${orig}>**.`;
+            if (origin === "me")
+            {
+
+               data.text = ":warning:  __**No tasks**__ for you in this server";
+
+            }
+            else if (origin === "target")
+            {
+
+               data.text = `:warning:  __**No tasks**__ for **<${des}>**.`;
+
+            }
+            else
+            {
+
+               data.text = `:warning:  __**No tasks**__ for **<${orig}>**.`;
+
+            }
             if (dest === "all")
             {
 
-               data.text =
-               ":warning:  This channel is not being automatically " +
-               "translated for anyone.";
+               data.text = ":warning:  This channel is not being automatically translated for anyone.";
 
             }
 

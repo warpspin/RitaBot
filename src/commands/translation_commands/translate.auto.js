@@ -27,8 +27,7 @@ module.exports = function run (data)
    {
 
       data.color = "error";
-      data.text =
-         ":no_entry:  This command can only be called in server channels.";
+      data.text = ":no_entry:  This command can only be called in server channels.";
 
       // -------------
       // Send message
@@ -46,8 +45,7 @@ module.exports = function run (data)
    {
 
       data.color = "error";
-      data.text =
-         ":warning:  Please use a defined `langFrom` language to translate from.";
+      data.text = ":warning:  Please use a defined `langFrom` language to translate from.";
 
       // -------------
       // Send message
@@ -61,8 +59,7 @@ module.exports = function run (data)
    {
 
       data.color = "error";
-      data.text =
-         ":warning:  Please use a defined `langTo` language to translate to.";
+      data.text = ":warning:  Please use a defined `langTo` language to translate to.";
 
       // -------------
       // Send message
@@ -158,9 +155,7 @@ module.exports = function run (data)
       {
 
          data.color = "error";
-         data.text =
-            ":no_entry:  Cannot add more auto-translation tasks for this " +
-            `channel (${data.config.maxTasksPerChannel} max)`;
+         data.text = `:no_entry:  Cannot add more auto-translation tasks for this channel (${data.config.maxTasksPerChannel} max)`;
 
          // -------------
          // Send message
@@ -248,23 +243,6 @@ module.exports = function run (data)
          if (dest.startsWith("<@"))
          {
 
-            /*
-            return data.message.channel.send({"embeds": [{
-               "author": {
-                  "icon_url": data.message.client.user.displayAvatarURL(),
-                  "name": data.message.client.user.username
-               },
-               "color": 13107200,
-               "description": `:no_entry_sign: This command has been disabled Pending a fix \n
-              We apologise for any inconvenience this may cause.`
-
-            }]});
-
-            // ---------------
-            // Old Code Below
-            // ---------------
-
-            */
             const userID = dest.slice(3, -1);
 
             fn.getUser(data.message.client, userID, (user) =>
@@ -351,9 +329,7 @@ module.exports = function run (data)
          {
 
             data.color = "error";
-            data.text =
-            ":warning:  Invalid auto translation request," +
-            " Missing destination parameter";
+            data.text = ":warning:  Invalid auto translation request, Missing destination parameter";
 
             // -------------
             // Send message
@@ -448,10 +424,7 @@ module.exports = function run (data)
       const forNames = data.cmd.for.join(",  ").replace("me", `<@${data.message.author.id}>`);
 
       data.color = "ok";
-      data.text =
-         ":white_check_mark:  Automatically translating messages " +
-         `from **\`${langFrom}\`** to **\`${langTo}\`** ` +
-         `for ${forNames}.`;
+      data.text = `:white_check_mark:  Automatically translating messages from **\`${langFrom}\`** to **\`${langTo}\`** for ${forNames}.`;
 
       // -------------
       // Send message

@@ -649,15 +649,17 @@ exports.channelTasks = function channelTasks (data)
 // Get tasks for channel or user
 // ------------------------------
 
-exports.getTasks = function getTasks (origin, dest, cb)
+exports.getTasks = function getTasks (origin, dest, id, cb)
 {
 
    // console.log("DEBUG: Stage Get tasks for channel or user");
-   if (dest.includes("@"))
+   if (origin.includes("me"))
    {
 
+      console.log("DEBUG: getTasks Me");
       return Tasks.findAll(
-         {"where": {dest}},
+         {"where": {"server": id,
+            dest}},
          {"raw": true}
       ).then(function res (result, err)
       {
@@ -670,6 +672,29 @@ exports.getTasks = function getTasks (origin, dest, cb)
       });
 
    }
+   else if (origin.includes("target"))
+   {
+
+      let dest1 = "@";
+      dest1 += dest;
+
+      console.log("DEBUG: getTasks @");
+      return Tasks.findAll(
+         {"where": {"server": id,
+            "dest": dest1}},
+         {"raw": true}
+      ).then(function res (result, err)
+      {
+
+         cb(
+            err,
+            result
+         );
+
+      });
+
+   }
+   console.log("DEBUG: getTasks All");
    return Tasks.findAll(
       {"where": {origin}},
       {"raw": true}

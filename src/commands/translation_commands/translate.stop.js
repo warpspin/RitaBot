@@ -422,8 +422,8 @@ module.exports = function run (data)
 
    const origin = data.message.channel.id;
    data.channel = data.message.channel;
-   const from = data.cmd.from.unique[0];
-   const to = data.cmd.to.unique[0];
+   // const from = data.cmd.from.unique[0];
+   // const to = data.cmd.to.unique[0];
    const dest = destID(
       data.cmd.for[0],
       data.message.author.id

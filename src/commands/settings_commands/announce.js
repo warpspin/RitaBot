@@ -26,7 +26,6 @@ async function announcement (data)
       "title": null
    };
    // Announcment started - Collect Title.
-   const filter = (m) => m.author.id === data.message.author.id;
    try
    {
 

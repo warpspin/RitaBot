@@ -15,7 +15,7 @@ const db = require("./db");
 const logger = require("./logger");
 const {MessageEmbed} = require("discord.js");
 const embed = new MessageEmbed();
-const Discord = require("discord.js");
+// const discord = require("discord.js");
 const webHookName = "RITA";
 const error = require("./error");
 const auth = require("../core/auth");
@@ -434,10 +434,12 @@ function embedOn (data)
          {
 
             // eslint-disable-next-line no-unused-vars
-            const attachmentObj = new Discord.MessageAttachment(
+            /*
+            const attachmentObj = new discord.MessageAttachment(
                attachments[i].url,
                attachments[i].name
             );
+            */
             data.channel.send({"content": `**${data.message.author.username}** sent a file:`,
                "files": [attachments[i].url]});
 
@@ -718,6 +720,7 @@ function embedOff (data)
    function sendWebhookMessage (webhook, data)
    {
 
+      var serverTags = null;
 
       if (data.message.server[0].servertags === "none")
       {

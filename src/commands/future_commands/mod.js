@@ -110,52 +110,37 @@ module.exports.unban = function unban (data)
       if (user)
       {
 
-         if (user)
-         {
+         data.message.guild.members.
+            unban(user).
+            then(() =>
+            {
 
-            data.message.guild.members.
-               unban(user).
-               then(() =>
+               // We let the message author know we were able to kick the person
+               data.color = "ok";
+               data.text = `Successfully unbanned ${user}\n`;
+               return sendMessage(data);
+
+            }).
+            catch((err) =>
+            {
+
+               if (err.code === 10026)
                {
 
-                  // We let the message author know we were able to kick the person
-                  data.color = "ok";
-                  data.text = `Successfully unbanned ${user}\n`;
+                  data.color = "info";
+                  data.text = "This user ID is not banned.\n";
+                  // console.log(err);
                   return sendMessage(data);
 
-               }).
-               catch((err) =>
-               {
+               }
 
-                  if (err.code === 10026)
-                  {
+               data.color = "err";
+               data.text = "I was unable to unban that user.\nThis is generally due to the bot missing permissions, missing or incorrect ID or role hierarchy.\n";
+               console.log(err);
+               return sendMessage(data);
+               // Log the error
 
-                     data.color = "info";
-                     data.text = "This user ID is not banned.\n";
-                     // console.log(err);
-                     return sendMessage(data);
-
-                  }
-
-                  data.color = "err";
-                  data.text = "I was unable to unban that user.\nThis is generally due to the bot missing permissions, missing or incorrect ID or role hierarchy.\n";
-                  console.log(err);
-                  return sendMessage(data);
-                  // Log the error
-
-               });
-
-         }
-         else
-         {
-
-            // The mentioned user isn't in this guild
-            data.color = "info";
-            data.text = "That user isn't in this guild!\n";
-            return sendMessage(data);
-
-         }
-         // Otherwise, if no user was mentioned
+            });
 
       }
       else

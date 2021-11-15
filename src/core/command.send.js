@@ -33,6 +33,7 @@ async function sendMessage (data)
                try
                {
 
+                  // console.log("DEBUG: Command.send Delete Task 1");
                   setTimeout(() => msg.delete(), auth.time.long);
 
                }
@@ -133,6 +134,7 @@ module.exports = function run (data)
       try
       {
 
+         // console.log("DEBUG: Command.send Delete Task 2");
          setTimeout(() => data.message.delete(), auth.time.short);
 
       }
@@ -161,6 +163,7 @@ module.exports = function run (data)
    try
    {
 
+      // console.log("DEBUG: Command.send Delete Task 3");
       setTimeout(() => data.message.delete(), auth.time.short);
 
    }
