@@ -10,7 +10,7 @@ module.exports = function run (data)
 
    data.color = "info";
    data.text = "```md\n" +
-      `# ---------------------- Stat  Changes ---------------------- \n` +
+      `# ---------------------- 1.3.0-alpha.? ---------------------- \n` +
       `* RITA has boomed so much since she was launched and now has \n\n` +
       `  - Transalted over 26 Million messages\n` +
       `     - Across 10k Servers \n` +
