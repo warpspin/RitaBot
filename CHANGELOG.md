@@ -1,41 +1,62 @@
-## TEMP
-* `!tr updatelink` has been added
-* Local hosted users persist and react command fixed
+## 1.3.0-alpha.? Change Log
+  - Transalted over 26 Million messages
+     - Across 10k Servers 
+         - For 1.1 Million Users 
+
+### 1.3.0-alpha.? Major Changes
+* Dependancy Updates
+* Node and NPM Updated
+    > - node is now V16.13.0
+    >> - node version can be changed in package.json to any version above 16.2.0
+    > - npm is now V8.1.3
+    >> - npm version can be any version above 7.20.3
 * CS same language now works
-* Fixed invalid channel message
-* `!tr reactpersist` has been added. - Reaction will auto delete after 60 seconds
-* `!tr flagpersist` has been added. - Flag emoji will be removed after 15 seconds
-* Help menu updated.
-* Owner variable is now more reliable on messages
-* `checkperms` has ben replaced with `check`
-* Various Permission Errors
 * Join and leave logs can now be seperated from error logs with env variables `DISCORD_ACTIVITY_WEBHOOK_ID` & `DISCORD_ACTIVITY_WEBHOOK_TOKEN`
 * Task ID added to tasks Printout
-* Remove by ID is now possiable `!tr stop task [id]` Added
-* Error messages show Task ID
 * Ignore same chan translation of GIF and images
 * `Admin`, `Owner`, `Dev` and `Channel Manager` variables are now stored in message object
+* Shard command has been updated to show each shard and its stat
+
+### 1.3.0-alpha.? Bug Fixes
+* Local hosted users persist and react command fixed
+* Fixed invalid channel message
+* Various Permission Errors
+* `Admin`, `Owner`, `Dev` and `Channel Manager` variables are now stored in message object
 * Fixed translate for `me` command
-* servertags and langdetect status added to the settings and check commands
+
+
+### 1.3.0-alpha.? Command Changes
+* `!tr updatelink` has been added
+* `!tr reactpersist` has been added - Reaction will auto delete after 60 seconds
+* `!tr flagpersist` has been added - Flag emoji will be removed after 15 seconds 
+*  Task command updated, `!tr tasks [#chan/me]`
+    > - `me` will show any tasks for the user in any channel
+    > - `#chan` will target a single channel
+* `!tr checkperms` has ben replaced with `!tr check`
+* `!tr stop task [id]` has been added - Remove by ID is now possiable
 * `!tr settings tags [all/everyone/none]` has been added, this falls in line with discord.js (This setting only applies to `embed off` mode)
-  > - `none` - No tags are disabled, meaning `@user`, `@everyone` and `@here` will work
-  > - `everyone` - Attention tags are, meaning only `@user` will work
-  > - `all` - All tags are disabled, meaning `@user`, `@everyone` and `@here` will NOT work
+    > - `none` - No tags are disabled, meaning `@user`, `@everyone` and `@here` will work
+    > - `everyone` - Attention tags are, meaning only `@user` will work
+    > - `all` - All tags are disabled, meaning `@user`, `@everyone` and `@here` will NOT work
+
+### 1.3.0-alpha.? Database Changes
 * data.message.server[0] is built on every message event, Reducing the calls needed in send.js to db
 * db changes, the following columns have been added
-  > - `reactpersist` - manages the react persist variable
-  > - `flagpersist` - manages the flag persist variable
-  > - `servername` - stores a local copy of the server name
-  > - `servertags` - manages the server tags variable
-  > - `menupersist` - manages the menu persist variable
-  > - `whitelisted` - NOT IN USE, Yet!
-* Shard command has been updated to show each shard and its stats
+    > - `reactpersist` - manages the react persist variable
+    > - `flagpersist` - manages the flag persist variable
+    > - `servername` - stores a local copy of the server name
+    > - `servertags` - manages the server tags variable
+    > - `menupersist` - manages the menu persist variable
+    > - `whitelisted` - NOT IN USE, Yet!
+ 
+### 1.3.0-alpha.? Misc. Changes
+* Help menu updated
+* Owner variable is now more reliable on messages
 * Language marker has been added to embed off and and on messages, this is controlled with `!tr settings langdetect [on/off]`
-* Task command updated, `!tr tasks [#chan/me]` 
-  > - `me` will show any tasks for the user in any channel
-  > - `#chan` will target a single channel
+* Error messages show Task ID
+* servertags and langdetect status added to the settings and check commands
 
-
+------------
 
 ## 1.2.6 Change Log
 * RITA is now at 6400 servers, This is just Amazing.
@@ -55,15 +76,17 @@
 
 ### 1.2.6 Database Changes
 * Added in 3 new columns ready for auto-warn and eject management 
-  > Servers will be allowed 10 Permission Errors Before a Warning
+    > Servers will be allowed 10 Permission Errors Before a Warning
 
-  > Server will be given a Maximum of 3 Warning before they are Ejected
+    > Server will be given a Maximum of 3 Warning before they are Ejected
 
-  > If your server should be Ejected a second time it will be blacklisted
+    > If your server should be Ejected a second time it will be blacklisted
  
 ### 1.2.6 Misc. Changes
 * Sooooooo Many spelling mistakes corrected that it would be too many to list here. 
 * Help Menu updated with new commands.
+
+------------
 
 ## 1.2.5 Change Log
 * Since the launch of 1.2.4 Rita has grown by 800 servers, This is Amazing. From all the RITA Dev Team, We cant thank you enough. 
@@ -88,12 +111,14 @@
 ### 1.2.5 Misc. Changes
 * New Debug Settings for console.
 * MESSAGE_DEBUG
-  > - 0 - Error's Only
-  > - 1 - Console for all Messages
-  > - 2 - Console for Translate Messages only
-  > - 3 - Content of all Messages
-  > - 4 - Content of Translate Messages only
-  > - 5 - Commands Only
+    > - 0 - Error's Only
+    > - 1 - Console for all Messages
+    > - 2 - Console for Translate Messages only
+    > - 3 - Content of all Messages
+    > - 4 - Content of Translate Messages only
+    > - 5 - Commands Only
+
+------------
 
 ## 1.2.4 Change Log
 * BIG ANNOUNCEMENT - RITA IS NOW VERIFIED
@@ -126,6 +151,8 @@
 * Help muenus update with new commands.
 * Help menus has been reworked, Still a work in progress but they look much better now. 
 
+------------
+
 ## 1.2.3 Change Log
 * With the introduction of Version 1.2.3, we have updated the translate API. This is still the same as before but its now providing a much better accuracy rate than before.
 * We are still waiting for Discord to Verify RITA, so for now we are limited to 100 servers, We are at that limit at the moment so keep and eye out for the little blue tick, Once you see it you can invite RITA to your server. Please join our discord for more info. https://discord.gg/AtJcjvnkg6
@@ -147,6 +174,8 @@
 ### 1.2.3 Misc Changes
 * Zycore broke something (alot of times) Zycore fixed it again. 
 * All debug messages have been commented out in all files, This make the console log look so much cleaner. 
+
+------------
 
 ## 1.2.2 Change Log
 * With the introduction of Version 1.2.2, we are proud to introduce the Centralized Version of Rita with a One-Click Invite. This means you can still create your own personal RITA bot. Though now you have the option to forgo that personal setup and can instead use the Centralized version of RITA. Which has the added benefit of not requiring any of the setup steps required that you would have to do for your own personal RITA bot. Just invite the bot to your server and setup the bot to your liking.  
@@ -208,8 +237,9 @@
 * Major code changes
 * Dev Dependencies core to this bot, the `google-translate-api` & `google-translate-token` & `gulp-watch` have been updated
 
+------------
 
-## 1.2.1 
+## 1.2.1 Change Log
 * New commands added (embed, bot2bot, settings updatedb)
   * embed command allows you to change the type of message that is sent to the translation channel, in embed format or standard text. Standard text shows the users avatar and name instead of the bot.
   * bot2bot allows for messages sent from other bots, in non embedded format to be translated as well. (Due to limitation this has been implimented but is disabled for now)
@@ -234,7 +264,9 @@
 * `!t settings updatebot` Has been **DISABLED** - This is not needed as of yet and with the similarities to the `!t settings updatedb` command it may cause issues.
 * Deploy with Heroku Setup and integration. 
  
-## 1.2.0
+------------
+
+## 1.2.0 Change Log
 * No Code changes, just URL updates for New name of Bot
 * Published to NPM
 * Non code changes will be appended with Version-\*\* from now on.
@@ -246,19 +278,25 @@
 * Various Security vulnerabilities fixed.
 * Various commands re-activated.
 
-## 1.1.8
+------------
+
+## 1.1.8 Change Log
 * Various Security vulnerabilities fixed.
 * Various Spelling mistakes in ReadMe have been corrected.
 * Dev Dependencies core to this bot, the google-transalte-api & google-transalte-token have been updated
 
-## 1.1.7
+------------
+
+## 1.1.7 Change Log
 * Setup on a Raspberry Pi Section.
 * gulp-watch updated dependancies.
 * Patch for Chinese language support.
 * Various Security vulnerabilites fixed.
 * Various commands re-activated.
 
-## 1.1.6
+------------
+
+## 1.1.6 Change Log
 * Dependancy Updates
 * Updated ReadMe with Local Installation Support Section.
 * Images can now be sent in chat without the need for accompanying text.
@@ -267,24 +305,34 @@
 * Translation to user Via DM is now working again.
 * Stop command no longer crashes the bot.
 
-## 1.1.5
+------------
+
+## 1.1.5 Change Log
 * Core Changed with minor Gulp Updates
 * Changes to the approved length of Server ID's as Discord API has changed.
 * Updated Readme for Database Connection Support
 
-## 1.1.4
+------------
+
+## 1.1.4 Change Log
 * Dependancy Updates
 
-## 1.1.3
+------------
+
+## 1.1.3 Change Log
 * Dependancy Updates
   * "gulp-eslint": "^6.0.0" from "^4.0.2"
   * "eslint": "^6.0.1" from "4.19.1"
 * Help File Updates
 
-## 1.1.0
+------------
+
+## 1.1.0 Change Log
 * .eslintrc.json Fixes
 * Dependancy Updates
   * Changed "google-translate-token" from @vitalets/google-translate-token to "github:ZyC0R3/google-translate-token"
 
-## 1.0.0
+------------
+
+## 1.0.0 Change Log
 * First Build
