@@ -478,7 +478,7 @@ function getSettings (data)
    }
 
    // -----------------
-   // Server Tags
+   // Lang Detect
    // -----------------
 
    async function langDetect (data)
