@@ -1,8 +1,9 @@
-/* eslint-disable consistent-return */
 // -----------------
 // Global variables
+// Err TAG: RC502??
 // -----------------
 
+/* eslint-disable consistent-return */
 // Codebeat:disable[LOC,ABC,BLOCK_NESTING,ARITY]
 const db = require("../../core/db");
 

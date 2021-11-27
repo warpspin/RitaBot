@@ -1,5 +1,6 @@
 // -----------------
 // Global variables
+// Err TAG: RC001??
 // -----------------
 
 // Codebeat:disable[LOC,ABC,BLOCK_NESTING,ARITY]
@@ -290,9 +291,8 @@ module.exports = function run (data)
          if (output.server[0].blacklisted === true)
          {
 
-            // console.log(`${output.server[0].blacklisted}`);
             data.message.client.guilds.cache.get(id).leave();
-            console.log(`Self Kicked on command use due to blacklisted`);
+            console.log(`DEBUG: RC00102 - Self Kicked on command use due to blacklisted`);
 
          }
 
@@ -414,6 +414,7 @@ module.exports = function run (data)
    ).catch((err) =>
    {
 
+      console.log("DEBUG: RC00101");
       console.log(
          "error",
          err,

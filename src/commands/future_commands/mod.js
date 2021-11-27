@@ -1,5 +1,6 @@
 // -----------------
 // Global variables
+// Err TAG: RC102??
 // -----------------
 
 // Codebeat:disable[LOC,ABC,BLOCK_NESTING,ARITY]

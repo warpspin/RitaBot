@@ -1,5 +1,6 @@
 // -----------------
 // Global variables
+// Err TAG: RBS001??
 // -----------------
 
 // Codebeat:disable[LOC,ABC,BLOCK_NESTING]

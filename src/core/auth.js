@@ -1,3 +1,8 @@
+// -----------------
+// Global variables
+// Err TAG: RS001??
+// -----------------
+
 /* eslint-disable quotes */
 /*eslint-disable*/
 

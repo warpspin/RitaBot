@@ -1,5 +1,6 @@
 // -----------------
 // Global variables
+// Err TAG: RS002??
 // -----------------
 
 // Codebeat:disable[LOC,ABC,BLOCK_NESTING,ARITY]
@@ -231,7 +232,7 @@ module.exports = function run (data)
       {
 
          console.log(`--a.js--- Empty Message Error: ----1----\nServer: ${data.message.channel.guild.name},\nChannel: ${data.message.channel.id} - ${data.message.channel.name},\nMessage ID: ${data.message.id},\nContent: ${data.message.content},\nWas Image: ${data.message.attachments},\nWas Embed: ${data.message.embeds},\nSender: ${data.message.member.displayName} - ${data.message.member.id},\nTimestamp: ${data.message.createdAt}\n----------------------------------------`);
-         data.message.content = `Error: 10001 - Auto Error, Please report to admins.`;
+         data.message.content = `Error: RS00201 - Auto Error, Please report to admins.`;
 
       }
 
@@ -243,7 +244,7 @@ module.exports = function run (data)
 
             return data.message.react("➖").catch((err) => logger(
                "dev",
-               `${err}\n\n'# Cannot react`
+               `${err}\n\n'Error: RS00202 Cannot react`
             ));
 
          }

@@ -1,6 +1,7 @@
-// -------
-// Colors
-// -------
+// -----------------
+// Global variables
+// Err TAG: RS003??
+// -----------------
 
 // Codebeat:disable[LOC,ABC,BLOCK_NESTING,ARITY]
 const colors = {

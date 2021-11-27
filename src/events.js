@@ -1,9 +1,10 @@
-/* eslint-disable sort-keys */
-/* eslint-disable consistent-return */
 // -----------------
 // Global variables
+// Err TAG: RB002??
 // -----------------
 
+/* eslint-disable sort-keys */
+/* eslint-disable consistent-return */
 // Codebeat:disable[LOC,ABC,BLOCK_NESTING]
 const {stripIndent} = require("common-tags");
 const {oneLine} = require("common-tags");
